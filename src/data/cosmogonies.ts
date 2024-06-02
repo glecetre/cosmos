@@ -1,13 +1,13 @@
-import { eq } from "drizzle-orm";
-import { database } from "@/data/database";
-import { SelectCosmogony, cosmogoniesTable } from "@/data/schema";
+import { eq } from 'drizzle-orm';
+import { database } from '@/data/database';
+import { cosmogoniesTable, SelectCosmogony } from '@/data/schema';
 
 /**
  * Get all the cosmogonies.
  * @returns All cosmogonies.
  */
 export async function getAllCosmogonies() {
-  return database.select().from(cosmogoniesTable);
+    return database.select().from(cosmogoniesTable);
 }
 
 /**
@@ -15,12 +15,12 @@ export async function getAllCosmogonies() {
  * @param slug Slug of the cosmogony to fetch.
  * @returns The cosmogony.
  */
-export async function getCosmogonyBySlug(slug: SelectCosmogony["slug"]) {
-  const result = await database
-    .select()
-    .from(cosmogoniesTable)
-    .where(eq(cosmogoniesTable.slug, slug))
-    .limit(1);
+export async function getCosmogonyBySlug(slug: SelectCosmogony['slug']) {
+    const result = await database
+        .select()
+        .from(cosmogoniesTable)
+        .where(eq(cosmogoniesTable.slug, slug))
+        .limit(1);
 
-  return result[0];
+    return result[0];
 }

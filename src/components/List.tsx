@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export type ListProps = {
-  children: ReactNode | ReactNode[];
+    children: ReactNode | ReactNode[];
 };
 
 export function List(props: ListProps) {
-  return <ul>{props.children}</ul>;
+    return <ul>{props.children}</ul>;
 }
