@@ -21,13 +21,11 @@ export default function RootLayout({
             className={`min-h-full bg-[#E8E6DD] ${spaceGrotesk.className}`}
         >
             <body className="h-full">
-                <div className="mx-auto max-w-[80ch]">
+                <div className="mx-auto max-w-[90ch]">
                     <Header />
                 </div>
                 <div className="mb-20 border-b border-t border-black/20">
-                    <div className="mx-auto box-content max-w-[80ch] border-e border-s border-black/20 p-20">
-                        {children}
-                    </div>
+                    {children}
                 </div>
             </body>
         </html>

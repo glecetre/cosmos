@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export type ListItemProps = {
     title: string;
     subtitle?: string;
@@ -16,12 +18,12 @@ export function ListItem(props: ListItemProps) {
             </div>
 
             {props.href && (
-                <a
+                <Link
                     href={props.href}
-                    className="border border-black/20 bg-white/50 px-4 py-2 leading-none"
+                    className="border border-black/20 bg-white/50 px-4 py-2 leading-none ml-4"
                 >
                     {props.actionText ?? 'View'}&nbsp;→
-                </a>
+                </Link>
             )}
         </li>
     );
