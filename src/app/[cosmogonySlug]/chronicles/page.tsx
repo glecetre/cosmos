@@ -10,13 +10,15 @@ export default async function CharactersPage(props: {
     const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
     const chronicles = await getChroniclesList(cosmogony.id);
 
-    const breadcrumbs = [
-        {title: cosmogony.name, href: `/${cosmogony.slug}`},
-        {title: "Chronicles", href: `/${cosmogony.slug}/chronicles`},
-    ];
-
     return (
-        <Page title="Chronicles" subtitle={`in ${cosmogony.name}`} breadcrumbs={breadcrumbs}>
+        <Page
+            title="Chronicles"
+            subtitle={`in ${cosmogony.name}`}
+            breadcrumbs={[
+                { text: cosmogony.name, href: `/${cosmogony.slug}` },
+                { text: 'Chronicles', href: `/${cosmogony.slug}/chronicles` },
+            ]}
+        >
             <List>
                 {chronicles.map((chronicles) => (
                     <ListItem

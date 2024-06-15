@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Button } from '@/components/Button';
 
 export type ListItemProps = {
     title: string;
@@ -9,7 +9,7 @@ export type ListItemProps = {
 
 export function ListItem(props: ListItemProps) {
     return (
-        <li className="flex items-center justify-between border-b border-black/20 p-4 pb-10 pt-12 transition first:pt-10 last:border-b-0 has-[a:hover]:bg-white/50">
+        <li className="flex items-center justify-between gap-4 border-b border-black/20 p-4 pb-10 pt-12 transition first:pt-10 last:border-b-0">
             <div>
                 <p className="text-2xl">{props.title}</p>
                 {props.subtitle && (
@@ -18,12 +18,9 @@ export function ListItem(props: ListItemProps) {
             </div>
 
             {props.href && (
-                <Link
-                    href={props.href}
-                    className="border border-black/20 bg-white/50 px-4 py-2 leading-none ml-4"
-                >
+                <Button use="link" href={props.href} variant="button">
                     {props.actionText ?? 'View'}&nbsp;→
-                </Link>
+                </Button>
             )}
         </li>
     );

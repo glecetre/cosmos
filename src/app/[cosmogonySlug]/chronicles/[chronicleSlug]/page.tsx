@@ -18,17 +18,18 @@ export default async function CharacterPage(props: {
         return notFound();
     }
 
-    const breadcrumbs = [
-        {title: cosmogony.name, href: `/${cosmogony.slug}`},
-        {title: "Chronicles", href: `/${cosmogony.slug}/chronicles`},
-        {title: chronicle.title, href: `/${cosmogony.slug}/chronicles/${chronicle.slug}`}
-    ];
-
     return (
         <Page
             title={chronicle.title}
             subtitle={`Chronicle in ${cosmogony.name}`}
-            breadcrumbs={breadcrumbs}
+            breadcrumbs={[
+                { text: cosmogony.name, href: `/${cosmogony.slug}` },
+                { text: 'Chronicles', href: `/${cosmogony.slug}/chronicles` },
+                {
+                    text: chronicle.title,
+                    href: `/${cosmogony.slug}/chronicles/${chronicle.slug}`,
+                },
+            ]}
         >
             <section className="prose text-justify text-xl">
                 <Markdown remarkPlugins={[remarkGfm]}>

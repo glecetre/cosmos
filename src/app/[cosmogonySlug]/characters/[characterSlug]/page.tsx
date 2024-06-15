@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { getCharacterBySlug } from '@/data/characters';
 import { getCosmogonyBySlug } from '@/data/cosmogonies';
@@ -16,20 +17,30 @@ export default async function CharacterPage(props: {
         return notFound();
     }
 
-    const breadcrumbs = [
-        {title: cosmogony.name, href: `/${cosmogony.slug}`},
-        {title: "Characters", href: `/${cosmogony.slug}/characters`},
-        {title: character.name, href: `/${cosmogony.slug}/characters/${character.slug}`}
-    ];
-
     return (
         <Page
             title={character.name}
             subtitle={`Character in ${cosmogony.name}`}
-            breadcrumbs={breadcrumbs}
+            breadcrumbs={[
+                { text: cosmogony.name, href: `/${cosmogony.slug}` },
+                { text: 'Characters', href: `/${cosmogony.slug}/characters` },
+                {
+                    text: character.name,
+                    href: `/${cosmogony.slug}/characters/${character.slug}`,
+                },
+            ]}
+            actions={[
+                <Button
+                    key="edit"
+                    use="link"
+                    variant="pageAction"
+                    href={`/${cosmogony.slug}/characters/${character.slug}/edit`}
+                >
+                    Edit
+                </Button>,
+            ]}
         >
-            <section
-                className="prose text-justify text-xl"
+            <section className="prose text-justify text-xl"
                 dangerouslySetInnerHTML={{ __html: character.markdownContent }}
             ></section>
         </Page>

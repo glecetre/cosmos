@@ -1,22 +1,27 @@
-import Link from "next/link";
+import { Fragment } from 'react';
+import { Button } from '@/components/Button';
 
 export type BreadcrumbsProps = {
-    crumbs: Array<{title: string, href?: string}>;
-}
+    crumbs: Array<{ text: string; href?: string }>;
+};
 
 export function Breadcrumbs(props: BreadcrumbsProps) {
     return (
-        <ol className='flex gap-4 text-black/50'>
-                {props.crumbs?.map((crumb, index) => (
-                    <>
-                        <li key={index} className="hover:text-black/100 hover:underline">
-                            {crumb.href
-                                ? <Link href={crumb.href}>{crumb.title}</Link>
-                                : crumb.title}
-                        </li>
-                        {index !== props.crumbs.length - 1 && <span>/</span>}
-                    </>
-                ))}
-            </ol>
-    )
+        <ol className="flex gap-4 text-black/60">
+            {props.crumbs?.map((crumb, index) => (
+                <Fragment key={index}>
+                    <li>
+                        {crumb.href ? (
+                            <Button use="link" href={crumb.href}>
+                                {crumb.text}
+                            </Button>
+                        ) : (
+                            crumb.text
+                        )}
+                    </li>
+                    {index !== props.crumbs.length - 1 && <span>/</span>}
+                </Fragment>
+            ))}
+        </ol>
+    );
 }
