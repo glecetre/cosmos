@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { getCharacterBySlug } from '@/data/characters';
@@ -40,9 +42,11 @@ export default async function CharacterPage(props: {
                 </Button>,
             ]}
         >
-            <section className="prose text-justify text-xl"
-                dangerouslySetInnerHTML={{ __html: character.markdownContent }}
-            ></section>
+            <section className="prose text-justify text-xl">
+                <Markdown remarkPlugins={[remarkGfm]}>
+                    {character.markdownContent}
+                </Markdown>
+            </section>
         </Page>
     );
 }
