@@ -2,6 +2,8 @@ import { eq } from 'drizzle-orm';
 import { database } from '@/data/database';
 import { cosmogoniesTable, SelectCosmogony } from '@/data/schema';
 
+export type Cosmogony = SelectCosmogony;
+
 /**
  * Get all the cosmogonies.
  * @returns All cosmogonies.

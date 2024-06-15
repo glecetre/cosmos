@@ -1,5 +1,6 @@
 import { meilisearch } from '@/data/meilisearch';
 import { SelectCosmogony } from '@/data/schema';
+import { slugify } from '@/utils';
 
 export type Character = {
     id: number;
@@ -7,6 +8,11 @@ export type Character = {
     slug: string;
     markdownContent: string;
 };
+
+export type CharacterUpdate = Pick<
+    Character,
+    'id' | 'name' | 'markdownContent'
+>;
 
 /**
  * Get the number of characters in a cosmogony.
@@ -51,6 +57,38 @@ export async function getCharacterBySlug(
     }
 
     return response.results[0];
+}
+
+/**
+ * Fetch a character by its ID in the given cosmogony.
+ * @param cosmogonyId ID of the cosmogony to look into.
+ * @param id ID of the character to fetch.
+ * @returns The character or `undefined` if not found.
+ */
+export async function getCharacterById(
+    cosmogonyId: SelectCosmogony['id'],
+    id: Character['id']
+) {
+    return getIndex(cosmogonyId).getDocument<Character>(id);
+}
+
+/**
+ * Save changes on an existing character in a cosmogony.
+ * @param cosmogonyId ID of the cosmogony to save the character in.
+ * @param character Character to save.
+ * @returns The updated character.
+ */
+export async function saveCharacter(
+    cosmogonyId: SelectCosmogony['id'],
+    character: CharacterUpdate
+): Promise<Character> {
+    const characterToSave = {
+        ...character,
+        slug: slugify(character.name),
+    };
+
+    await getIndex(cosmogonyId).updateDocuments([characterToSave]);
+    return getCharacterById(cosmogonyId, characterToSave.id);
 }
 
 function getIndex(cosmogonyId: SelectCosmogony['id']) {
