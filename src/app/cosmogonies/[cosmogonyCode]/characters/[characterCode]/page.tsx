@@ -6,11 +6,14 @@ import { Page } from '@/components/Page';
 import { getCharacterByCode } from '@/data/characters';
 
 export default async function CharacterPage(props: {
-    params: { characterCode: string };
+    params: { characterCode: string; cosmogonyCode: string };
 }) {
     const character = await getCharacterByCode(props.params.characterCode);
 
-    if (!character) {
+    if (
+        !character ||
+        character.cosmogony.shortCode !== props.params.cosmogonyCode
+    ) {
         return notFound();
     }
 
@@ -29,7 +32,7 @@ export default async function CharacterPage(props: {
                 },
                 {
                     text: character.name,
-                    href: `/characters/${character.shortCode}`,
+                    href: `/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}`,
                 },
             ]}
             actions={[
@@ -37,7 +40,7 @@ export default async function CharacterPage(props: {
                     key="edit"
                     use="link"
                     variant="pageAction"
-                    href={`/characters/${character.shortCode}/edit`}
+                    href={`/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}/edit`}
                 >
                     Edit
                 </Button>,

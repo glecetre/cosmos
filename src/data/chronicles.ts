@@ -63,11 +63,15 @@ export async function getChronicleByCode(
 export async function saveChronicle(
     chronicle: Pick<SelectChronicle, 'id' | 'title' | 'markdown'>
 ) {
-    const updatedChronicles = await database
+    await database
         .update(chroniclesTable)
         .set(chronicle)
-        .where(eq(chroniclesTable.id, chronicle.id))
-        .returning();
+        .where(eq(chroniclesTable.id, chronicle.id));
 
-    return updatedChronicles[0];
+    return (await database.query.chroniclesTable.findFirst({
+        where: eq(chroniclesTable.id, chronicle.id),
+        with: {
+            cosmogony: true,
+        },
+    }))!; // Force non-null as we know this exists because we've just updated it.
 }

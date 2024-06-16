@@ -1,28 +1,26 @@
 import { notFound } from 'next/navigation';
-import {
-    EDIT_CHRONICLE_FORM_ID,
-    EditChronicleForm,
-} from '@/app/chronicles/[chronicleCode]/edit/EditChronicleForm';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { getChronicleByCode } from '@/data/chronicles';
 
-export type CharacterEditPageProps = {
-    params: {
-        chronicleCode: string;
-    };
-};
-
-export default async function ChronicleEditPage(props: CharacterEditPageProps) {
+export default async function CharacterPage(props: {
+    params: { chronicleCode: string; cosmogonyCode: string };
+}) {
     const chronicle = await getChronicleByCode(props.params.chronicleCode);
 
-    if (!chronicle) {
+    if (
+        !chronicle ||
+        chronicle.cosmogony.shortCode !== props.params.cosmogonyCode
+    ) {
         return notFound();
     }
 
     return (
         <Page
-            title={`Editing chronicle`}
+            title={chronicle.title}
+            subtitle={`Chronicle in ${chronicle.cosmogony.name}`}
             breadcrumbs={[
                 {
                     text: chronicle.cosmogony.name,
@@ -34,29 +32,25 @@ export default async function ChronicleEditPage(props: CharacterEditPageProps) {
                 },
                 {
                     text: chronicle.title,
-                    href: `/chronicles/${chronicle.shortCode}`,
+                    href: `/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles/${chronicle.shortCode}`,
                 },
             ]}
             actions={[
                 <Button
-                    key="save"
-                    variant="pageAction"
-                    primary
-                    form={EDIT_CHRONICLE_FORM_ID}
-                >
-                    Save
-                </Button>,
-                <Button
-                    key="cancel"
+                    key="edit"
                     use="link"
-                    href={`/chronicles/${chronicle.shortCode}`}
                     variant="pageAction"
+                    href={`/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles/${chronicle.shortCode}/edit`}
                 >
-                    Cancel
+                    Edit
                 </Button>,
             ]}
         >
-            <EditChronicleForm chronicle={chronicle} />
+            <section className="prose text-justify text-xl">
+                <Markdown remarkPlugins={[remarkGfm]}>
+                    {chronicle.markdown}
+                </Markdown>
+            </section>
         </Page>
     );
 }

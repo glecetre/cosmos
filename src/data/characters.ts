@@ -62,11 +62,15 @@ export async function getCharacterByCode(
 export async function saveCharacter(
     character: Pick<SelectCharacter, 'id' | 'name' | 'markdown'>
 ) {
-    const updatedCharacters = await database
+    await database
         .update(charactersTable)
         .set(character)
-        .where(eq(charactersTable.id, character.id))
-        .returning();
+        .where(eq(charactersTable.id, character.id));
 
-    return updatedCharacters[0];
+    return (await database.query.charactersTable.findFirst({
+        where: eq(charactersTable.id, character.id),
+        with: {
+            cosmogony: true,
+        },
+    }))!; // Force non-null as we know this exists because we've just updated it.
 }

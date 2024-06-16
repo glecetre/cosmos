@@ -25,7 +25,9 @@ export async function submitSaveChronicle(
 
     const updatedChronicle = await saveChronicle(parseResult.data);
 
-    redirect(`/chronicles/${updatedChronicle.shortCode}`);
+    redirect(
+        `/cosmogonies/${updatedChronicle.cosmogony.shortCode}/chronicles/${updatedChronicle.shortCode}`
+    );
 }
 
 type SubmitSaveChronicleState = {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { submitSaveCharacter } from '@/app/characters/[characterCode]/edit/submitSaveCharacterAction';
+import { submitSaveCharacter } from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/submitSaveCharacterAction';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';

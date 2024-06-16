@@ -25,7 +25,9 @@ export async function submitSaveCharacter(
 
     const updatedCharacter = await saveCharacter(parseResult.data);
 
-    redirect(`/characters/${updatedCharacter.shortCode}`);
+    redirect(
+        `/cosmogonies/${updatedCharacter.cosmogony.shortCode}/characters/${updatedCharacter.shortCode}`
+    );
 }
 
 type SubmitSavecharacterState = {

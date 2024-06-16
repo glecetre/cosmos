@@ -2,21 +2,20 @@ import { notFound } from 'next/navigation';
 import {
     EDIT_CHARACTER_FORM_ID,
     EditCharacterForm,
-} from '@/app/characters/[characterCode]/edit/EditCharacterForm';
+} from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/EditCharacterForm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { getCharacterByCode } from '@/data/characters';
 
-export type CharacterEditPageProps = {
-    params: {
-        characterCode: string;
-    };
-};
-
-export default async function CharacterEditPage(props: CharacterEditPageProps) {
+export default async function CharacterEditPage(props: {
+    params: { characterCode: string; cosmogonyCode: string };
+}) {
     const character = await getCharacterByCode(props.params.characterCode);
 
-    if (!character) {
+    if (
+        !character ||
+        character.cosmogony.shortCode !== props.params.cosmogonyCode
+    ) {
         return notFound();
     }
 
@@ -34,7 +33,7 @@ export default async function CharacterEditPage(props: CharacterEditPageProps) {
                 },
                 {
                     text: character.name,
-                    href: `/characters/${character.shortCode}`,
+                    href: `/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}`,
                 },
             ]}
             actions={[
@@ -49,7 +48,7 @@ export default async function CharacterEditPage(props: CharacterEditPageProps) {
                 <Button
                     key="cancel"
                     use="link"
-                    href={`/characters/${character.shortCode}`}
+                    href={`/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}`}
                     variant="pageAction"
                 >
                     Cancel
