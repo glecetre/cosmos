@@ -1,6 +1,7 @@
 import { and, count, eq } from 'drizzle-orm';
 import { database } from '@/data/database';
 import {
+    InsertChronicle,
     SelectChronicle,
     SelectCosmogony,
     chroniclesTable,
@@ -39,8 +40,21 @@ export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
 }
 
 /**
+ * Get a chronicle by its ID.
+ * @param id ID of the chronicle to fetch.
+ * @returns The chronicle or `undefined` if not found.
+ */
+export async function getChronicleById(id: SelectChronicle['id']) {
+    return database.query.chroniclesTable.findFirst({
+        where: and(eq(chroniclesTable.id, id)),
+        with: {
+            cosmogony: true,
+        },
+    });
+}
+
+/**
  * Get a chronicle by its short code.
- * @param cosmogonyId ID of the cosmogony to look into.
  * @param shortCode Short code of the chronicle to fetch.
  * @returns The chronicle or `undefined` if not found.
  */
@@ -68,10 +82,19 @@ export async function updateChronicle(
         .set(chronicle)
         .where(eq(chroniclesTable.id, chronicle.id));
 
-    return (await database.query.chroniclesTable.findFirst({
-        where: eq(chroniclesTable.id, chronicle.id),
-        with: {
-            cosmogony: true,
-        },
-    }))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getChronicleById(chronicle.id))!; // Force non-null as we know this exists because we've just updated it.
+}
+
+/**
+ * Create a new chronicle.
+ * @param chronicle Chronicle to create.
+ * @returns The created chronicle, if succeeded.
+ */
+export async function createChronicle(chronicle: InsertChronicle) {
+    const [{ insertedId }] = await database
+        .insert(chroniclesTable)
+        .values(chronicle)
+        .returning({ insertedId: chroniclesTable.id });
+
+    return (await getChronicleById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
 }
