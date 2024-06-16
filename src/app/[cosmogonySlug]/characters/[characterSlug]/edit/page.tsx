@@ -17,10 +17,7 @@ export type CharacterEditPageProps = {
 
 export default async function CharacterEditPage(props: CharacterEditPageProps) {
     const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
-    const character = await getCharacterBySlug(
-        cosmogony.id,
-        props.params.characterSlug
-    );
+    const character = await getCharacterBySlug(props.params.characterSlug);
 
     if (!character) {
         return notFound();

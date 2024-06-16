@@ -5,14 +5,13 @@ import { submitSaveCharacter } from '@/app/[cosmogonySlug]/characters/[character
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';
-import { type Character } from '@/data/characters';
-import { type Cosmogony } from '@/data/cosmogonies';
+import { SelectCharacter, SelectCosmogony } from '@/data/schema';
 
 export const EDIT_CHARACTER_FORM_ID = 'edit-character-form';
 
 export type EditCharacterFormProps = {
-    cosmogony: Cosmogony;
-    character: Character;
+    cosmogony: SelectCosmogony;
+    character: SelectCharacter;
 };
 
 export function EditCharacterForm(props: EditCharacterFormProps) {
@@ -41,13 +40,12 @@ export function EditCharacterForm(props: EditCharacterFormProps) {
                 autoComplete="off"
             />
             <Textarea
-                name="markdownContent"
+                name="markdown"
                 defaultValue={
-                    submissionState.fields?.markdownContent ||
-                    props.character.markdownContent
+                    submissionState.fields?.markdown || props.character.markdown
                 }
                 label="Content"
-                errors={submissionState.errors?.fieldErrors?.markdownContent}
+                errors={submissionState.errors?.fieldErrors?.markdown}
                 rows={19}
             />
         </Form>

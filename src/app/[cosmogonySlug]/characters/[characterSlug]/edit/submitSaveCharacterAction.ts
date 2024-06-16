@@ -23,10 +23,7 @@ export async function submitSaveCharacter(
         };
     }
 
-    const updatedCharacter = await saveCharacter(
-        parseResult.data.cosmogonyId,
-        parseResult.data
-    );
+    const updatedCharacter = await saveCharacter(parseResult.data);
 
     redirect(
         `/${parseResult.data.cosmogonySlug}/characters/${updatedCharacter.slug}`
@@ -43,5 +40,5 @@ const saveCharacterFormSchema = z.object({
     cosmogonySlug: z.string(),
     id: z.coerce.number(),
     name: z.string().trim().min(1, { message: 'Name cannot be empty' }),
-    markdownContent: z.string(),
+    markdown: z.string().default(''),
 });
