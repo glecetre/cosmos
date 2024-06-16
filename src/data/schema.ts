@@ -17,6 +17,26 @@ export const cosmogoniesTable = sqliteTable('cosmogonies', {
 export type SelectCosmogony = typeof cosmogoniesTable.$inferSelect;
 export type InsertCosmogony = typeof cosmogoniesTable.$inferInsert;
 
+export const chroniclesTable = sqliteTable('chronicles', {
+    id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+    cosmogonyId: integer('cosmogony_id')
+        .notNull()
+        .references(() => cosmogoniesTable.id),
+    title: text('title').notNull(),
+    slug: text('slug').notNull().unique(),
+    markdown: text('markdown').notNull().default(''),
+    createdAt: text('created_at')
+        .default(sql`(CURRENT_TIMESTAMP)`)
+        .notNull(),
+    updateAt: text('updated_at')
+        .default(sql`(CURRENT_TIMESTAMP)`)
+        .notNull()
+        .$onUpdate(() => new Date().toISOString()),
+});
+
+export type SelectChronicle = typeof chroniclesTable.$inferSelect;
+export type InsertChronicle = typeof chroniclesTable.$inferInsert;
+
 export const charactersTable = sqliteTable('characters', {
     id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
     cosmogonyId: integer('cosmogony_id')

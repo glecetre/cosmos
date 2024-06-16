@@ -9,10 +9,7 @@ export default async function CharacterPage(props: {
     params: { cosmogonySlug: string; chronicleSlug: string };
 }) {
     const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
-    const chronicle = await getChronicleBySlug(
-        cosmogony.id,
-        props.params.chronicleSlug
-    );
+    const chronicle = await getChronicleBySlug(props.params.chronicleSlug);
 
     if (!chronicle) {
         return notFound();
@@ -33,7 +30,7 @@ export default async function CharacterPage(props: {
         >
             <section className="prose text-justify text-xl">
                 <Markdown remarkPlugins={[remarkGfm]}>
-                    {chronicle.markdownContent}
+                    {chronicle.markdown}
                 </Markdown>
             </section>
         </Page>

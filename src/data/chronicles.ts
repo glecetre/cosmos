@@ -1,12 +1,6 @@
-import { meilisearch } from '@/data/meilisearch';
-import { SelectCosmogony } from '@/data/schema';
-
-export type Chronicle = {
-    id: number;
-    title: string;
-    slug: string;
-    markdownContent: string;
-};
+import { and, count, eq } from 'drizzle-orm';
+import { database } from '@/data/database';
+import { SelectCosmogony, chroniclesTable } from '@/data/schema';
 
 /**
  * Get the number of chronicles in a cosmogony.
@@ -14,8 +8,14 @@ export type Chronicle = {
  * @returns The number of chronicles in the cosmogony.
  */
 export async function getChroniclesCount(cosmogonyId: SelectCosmogony['id']) {
-    const stats = await getIndex(cosmogonyId).getStats();
-    return stats.numberOfDocuments;
+    const result = await database
+        .select({
+            value: count(),
+        })
+        .from(chroniclesTable)
+        .where(eq(chroniclesTable.cosmogonyId, cosmogonyId));
+
+    return result[0]?.value;
 }
 
 /**
@@ -24,11 +24,14 @@ export async function getChroniclesCount(cosmogonyId: SelectCosmogony['id']) {
  * @returns The list of chronicles in the cosmogony.
  */
 export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
-    const response = await getIndex(cosmogonyId).getDocuments<Chronicle>({
-        fields: ['id', 'title', 'slug'],
-    });
-
-    return response.results as Array<Pick<Chronicle, 'id' | 'title' | 'slug'>>;
+    return database
+        .select({
+            id: chroniclesTable.id,
+            title: chroniclesTable.title,
+            slug: chroniclesTable.slug,
+        })
+        .from(chroniclesTable)
+        .where(eq(chroniclesTable.cosmogonyId, cosmogonyId));
 }
 
 /**
@@ -37,26 +40,8 @@ export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
  * @param slug Slug of the chronicle to fetch.
  * @returns The chronicle or `undefined` if not found.
  */
-export async function getChronicleBySlug(
-    cosmogonyId: SelectCosmogony['id'],
-    slug: string
-) {
-    const response = await getIndex(cosmogonyId).getDocuments<Chronicle>({
-        limit: 1,
-        filter: `slug = ${slug}`,
+export async function getChronicleBySlug(slug: string) {
+    return database.query.chroniclesTable.findFirst({
+        where: and(eq(chroniclesTable.slug, slug)),
     });
-
-    if (response.results.length === 0) {
-        return undefined;
-    }
-
-    return response.results[0];
-}
-
-function getIndex(cosmogonyId: SelectCosmogony['id']) {
-    return meilisearch.index(getIndexName(cosmogonyId));
-}
-
-function getIndexName(cosmogonyId: SelectCosmogony['id']) {
-    return `chronicles_${cosmogonyId}`;
 }
