@@ -2,19 +2,19 @@ import { notFound } from 'next/navigation';
 import {
     EDIT_CHRONICLE_FORM_ID,
     EditChronicleForm,
-} from '@/app/chronicles/[chronicleSlug]/edit/EditChronicleForm';
+} from '@/app/chronicles/[chronicleCode]/edit/EditChronicleForm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getChronicleBySlug } from '@/data/chronicles';
+import { getChronicleByCode } from '@/data/chronicles';
 
 export type CharacterEditPageProps = {
     params: {
-        chronicleSlug: string;
+        chronicleCode: string;
     };
 };
 
 export default async function ChronicleEditPage(props: CharacterEditPageProps) {
-    const chronicle = await getChronicleBySlug(props.params.chronicleSlug);
+    const chronicle = await getChronicleByCode(props.params.chronicleCode);
 
     if (!chronicle) {
         return notFound();
@@ -26,15 +26,15 @@ export default async function ChronicleEditPage(props: CharacterEditPageProps) {
             breadcrumbs={[
                 {
                     text: chronicle.cosmogony.name,
-                    href: `/${chronicle.cosmogony.slug}`,
+                    href: `/cosmogonies/${chronicle.cosmogony.shortCode}`,
                 },
                 {
                     text: 'Chronicles',
-                    href: `/${chronicle.cosmogony.slug}/chronicles`,
+                    href: `/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles`,
                 },
                 {
                     text: chronicle.title,
-                    href: `/chronicles/${chronicle.slug}`,
+                    href: `/chronicles/${chronicle.shortCode}`,
                 },
             ]}
             actions={[
@@ -49,7 +49,7 @@ export default async function ChronicleEditPage(props: CharacterEditPageProps) {
                 <Button
                     key="cancel"
                     use="link"
-                    href={`/chronicles/${chronicle.slug}`}
+                    href={`/chronicles/${chronicle.shortCode}`}
                     variant="pageAction"
                 >
                     Cancel

@@ -32,20 +32,22 @@ export async function getCharactersList(cosmogonyId: SelectCosmogony['id']) {
         .select({
             id: charactersTable.id,
             name: charactersTable.name,
-            slug: charactersTable.slug,
+            shortCode: charactersTable.shortCode,
         })
         .from(charactersTable)
         .where(eq(charactersTable.cosmogonyId, cosmogonyId));
 }
 
 /**
- * Get a character by its slug.
- * @param slug Slug of the character to fetch.
+ * Get a character by its short code.
+ * @param shortCode Short code of the character to fetch.
  * @returns The character or `undefined` if not found.
  */
-export async function getCharacterBySlug(slug: string) {
+export async function getCharacterByCode(
+    shortCode: SelectCharacter['shortCode']
+) {
     return database.query.charactersTable.findFirst({
-        where: and(eq(charactersTable.slug, slug)),
+        where: and(eq(charactersTable.shortCode, shortCode)),
         with: {
             cosmogony: true,
         },
@@ -60,14 +62,9 @@ export async function getCharacterBySlug(slug: string) {
 export async function saveCharacter(
     character: Pick<SelectCharacter, 'id' | 'name' | 'markdown'>
 ) {
-    const characterToSave = {
-        ...character,
-        slug: encodeURIComponent(character.name).toLocaleLowerCase(),
-    };
-
     const updatedCharacters = await database
         .update(charactersTable)
-        .set(characterToSave)
+        .set(character)
         .where(eq(charactersTable.id, character.id))
         .returning();
 

@@ -13,15 +13,17 @@ export async function getAllCosmogonies() {
 }
 
 /**
- * Get a single cosmogony by its slug.
- * @param slug Slug of the cosmogony to fetch.
+ * Get a single cosmogony by its short code.
+ * @param shortCode Short code of the cosmogony to fetch.
  * @returns The cosmogony.
  */
-export async function getCosmogonyBySlug(slug: SelectCosmogony['slug']) {
+export async function getCosmogonyByCode(
+    shortCode: SelectCosmogony['shortCode']
+) {
     const result = await database
         .select()
         .from(cosmogoniesTable)
-        .where(eq(cosmogoniesTable.slug, slug))
+        .where(eq(cosmogoniesTable.shortCode, shortCode))
         .limit(1);
 
     return result[0];

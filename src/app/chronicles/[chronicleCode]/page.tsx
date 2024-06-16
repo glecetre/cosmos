@@ -3,33 +3,33 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getCharacterBySlug } from '@/data/characters';
+import { getChronicleByCode } from '@/data/chronicles';
 
 export default async function CharacterPage(props: {
-    params: { cosmogonySlug: string; characterSlug: string };
+    params: { chronicleCode: string };
 }) {
-    const character = await getCharacterBySlug(props.params.characterSlug);
+    const chronicle = await getChronicleByCode(props.params.chronicleCode);
 
-    if (!character) {
+    if (!chronicle) {
         return notFound();
     }
 
     return (
         <Page
-            title={character.name}
-            subtitle={`Character in ${character.cosmogony.name}`}
+            title={chronicle.title}
+            subtitle={`Chronicle in ${chronicle.cosmogony.name}`}
             breadcrumbs={[
                 {
-                    text: character.cosmogony.name,
-                    href: `/${character.cosmogony.slug}`,
+                    text: chronicle.cosmogony.name,
+                    href: `/cosmogonies/${chronicle.cosmogony.shortCode}`,
                 },
                 {
-                    text: 'Characters',
-                    href: `/${character.cosmogony.slug}/characters`,
+                    text: 'Chronicles',
+                    href: `/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles`,
                 },
                 {
-                    text: character.name,
-                    href: `/characters/${character.slug}`,
+                    text: chronicle.title,
+                    href: `/chronicles/${chronicle.shortCode}`,
                 },
             ]}
             actions={[
@@ -37,7 +37,7 @@ export default async function CharacterPage(props: {
                     key="edit"
                     use="link"
                     variant="pageAction"
-                    href={`/characters/${character.slug}/edit`}
+                    href={`/chronicles/${chronicle.shortCode}/edit`}
                 >
                     Edit
                 </Button>,
@@ -45,7 +45,7 @@ export default async function CharacterPage(props: {
         >
             <section className="prose text-justify text-xl">
                 <Markdown remarkPlugins={[remarkGfm]}>
-                    {character.markdown}
+                    {chronicle.markdown}
                 </Markdown>
             </section>
         </Page>

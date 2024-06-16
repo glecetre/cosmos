@@ -2,12 +2,12 @@ import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { getChroniclesList } from '@/data/chronicles';
-import { getCosmogonyBySlug } from '@/data/cosmogonies';
+import { getCosmogonyByCode } from '@/data/cosmogonies';
 
 export default async function CharactersPage(props: {
-    params: { cosmogonySlug: string };
+    params: { cosmogonyCode: string };
 }) {
-    const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
+    const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
     const chronicles = await getChroniclesList(cosmogony.id);
 
     return (
@@ -15,8 +15,14 @@ export default async function CharactersPage(props: {
             title="Chronicles"
             subtitle={`in ${cosmogony.name}`}
             breadcrumbs={[
-                { text: cosmogony.name, href: `/${cosmogony.slug}` },
-                { text: 'Chronicles', href: `/${cosmogony.slug}/chronicles` },
+                {
+                    text: cosmogony.name,
+                    href: `/cosmogonies/${cosmogony.shortCode}`,
+                },
+                {
+                    text: 'Chronicles',
+                    href: `/cosmogonies/${cosmogony.shortCode}/chronicles`,
+                },
             ]}
         >
             <List>
@@ -24,7 +30,7 @@ export default async function CharactersPage(props: {
                     <ListItem
                         key={chronicles.id}
                         title={chronicles.title}
-                        href={`/chronicles/${chronicles.slug}`}
+                        href={`/chronicles/${chronicles.shortCode}`}
                     />
                 ))}
             </List>

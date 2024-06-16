@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { submitSaveChronicle } from '@/app/chronicles/[chronicleSlug]/edit/submitSaveChronicleAction';
+import { submitSaveChronicle } from '@/app/chronicles/[chronicleCode]/edit/submitSaveChronicleAction';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';

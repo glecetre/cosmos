@@ -32,21 +32,23 @@ export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
         .select({
             id: chroniclesTable.id,
             title: chroniclesTable.title,
-            slug: chroniclesTable.slug,
+            shortCode: chroniclesTable.shortCode,
         })
         .from(chroniclesTable)
         .where(eq(chroniclesTable.cosmogonyId, cosmogonyId));
 }
 
 /**
- * Get a chronicle by its slug.
+ * Get a chronicle by its short code.
  * @param cosmogonyId ID of the cosmogony to look into.
- * @param slug Slug of the chronicle to fetch.
+ * @param shortCode Short code of the chronicle to fetch.
  * @returns The chronicle or `undefined` if not found.
  */
-export async function getChronicleBySlug(slug: string) {
+export async function getChronicleByCode(
+    shortCode: SelectChronicle['shortCode']
+) {
     return database.query.chroniclesTable.findFirst({
-        where: and(eq(chroniclesTable.slug, slug)),
+        where: and(eq(chroniclesTable.shortCode, shortCode)),
         with: {
             cosmogony: true,
         },
@@ -61,14 +63,9 @@ export async function getChronicleBySlug(slug: string) {
 export async function saveChronicle(
     chronicle: Pick<SelectChronicle, 'id' | 'title' | 'markdown'>
 ) {
-    const chronicleToSave = {
-        ...chronicle,
-        slug: encodeURIComponent(chronicle.title).toLocaleLowerCase(),
-    };
-
     const updatedChronicles = await database
         .update(chroniclesTable)
-        .set(chronicleToSave)
+        .set(chronicle)
         .where(eq(chroniclesTable.id, chronicle.id))
         .returning();
 

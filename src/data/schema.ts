@@ -1,10 +1,11 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { nanoid } from 'nanoid';
 
 export const cosmogoniesTable = sqliteTable('cosmogonies', {
     id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
-    slug: text('slug').notNull(),
+    shortCode: text('short_code').notNull().$default(generateShortCode),
     createdAt: text('created_at')
         .default(sql`(CURRENT_TIMESTAMP)`)
         .notNull(),
@@ -28,7 +29,10 @@ export const chroniclesTable = sqliteTable('chronicles', {
         .notNull()
         .references(() => cosmogoniesTable.id),
     title: text('title').notNull(),
-    slug: text('slug').notNull().unique(),
+    shortCode: text('short_code')
+        .notNull()
+        .unique()
+        .$default(generateShortCode),
     markdown: text('markdown').notNull().default(''),
     createdAt: text('created_at')
         .default(sql`(CURRENT_TIMESTAMP)`)
@@ -55,7 +59,10 @@ export const charactersTable = sqliteTable('characters', {
         .notNull()
         .references(() => cosmogoniesTable.id),
     name: text('name').notNull(),
-    slug: text('slug').notNull().unique(),
+    shortCode: text('short_code')
+        .notNull()
+        .unique()
+        .$default(generateShortCode),
     markdown: text('markdown').default('').notNull(),
     createdAt: text('created_at')
         .default(sql`(CURRENT_TIMESTAMP)`)
@@ -75,3 +82,7 @@ export const charactersRelations = relations(charactersTable, ({ one }) => ({
 
 export type SelectCharacter = typeof charactersTable.$inferSelect;
 export type InsertCharacter = typeof charactersTable.$inferInsert;
+
+function generateShortCode() {
+    return nanoid(10);
+}

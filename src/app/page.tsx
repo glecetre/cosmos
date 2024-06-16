@@ -18,7 +18,7 @@ export default async function Home() {
                     <ListItem
                         key={cosmogony.id}
                         title={cosmogony.name}
-                        href={cosmogony.slug}
+                        href={`/cosmogonies/${cosmogony.shortCode}`}
                     />
                 ))}
             </List>

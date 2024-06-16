@@ -3,12 +3,12 @@ import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { getCharactersCount } from '@/data/characters';
 import { getChroniclesCount } from '@/data/chronicles';
-import { getCosmogonyBySlug } from '@/data/cosmogonies';
+import { getCosmogonyByCode } from '@/data/cosmogonies';
 
 export default async function CosmogonyPage(props: {
-    params: { cosmogonySlug: string };
+    params: { cosmogonyCode: string };
 }) {
-    const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
+    const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
     const chroniclesCount = await getChroniclesCount(cosmogony.id);
     const charactersCount = await getCharactersCount(cosmogony.id);
 
@@ -18,12 +18,12 @@ export default async function CosmogonyPage(props: {
                 <ListItem
                     title="Chronicles"
                     subtitle={`${chroniclesCount} entries`}
-                    href={`/${cosmogony.slug}/chronicles`}
+                    href={`/cosmogonies/${cosmogony.shortCode}/chronicles`}
                 />
                 <ListItem
                     title="Characters"
                     subtitle={`${charactersCount} entries`}
-                    href={`/${cosmogony.slug}/characters`}
+                    href={`/cosmogonies/${cosmogony.shortCode}/characters`}
                 />
             </List>
         </Page>
