@@ -24,7 +24,7 @@ export default async function CharactersPage(props: {
                     <ListItem
                         key={character.id}
                         title={character.name}
-                        href={`characters/${character.slug}`}
+                        href={`/characters/${character.slug}`}
                     />
                 ))}
             </List>

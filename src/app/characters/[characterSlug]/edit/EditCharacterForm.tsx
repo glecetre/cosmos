@@ -1,16 +1,15 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { submitSaveCharacter } from '@/app/[cosmogonySlug]/characters/[characterSlug]/edit/submitSaveCharacterAction';
+import { submitSaveCharacter } from '@/app/characters/[characterSlug]/edit/submitSaveCharacterAction';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';
-import { SelectCharacter, SelectCosmogony } from '@/data/schema';
+import { SelectCharacter } from '@/data/schema';
 
 export const EDIT_CHARACTER_FORM_ID = 'edit-character-form';
 
 export type EditCharacterFormProps = {
-    cosmogony: SelectCosmogony;
     character: SelectCharacter;
 };
 
@@ -19,16 +18,6 @@ export function EditCharacterForm(props: EditCharacterFormProps) {
 
     return (
         <Form id={EDIT_CHARACTER_FORM_ID} action={formAction}>
-            <input
-                type="hidden"
-                name="cosmogonyId"
-                value={props.cosmogony.id}
-            />
-            <input
-                type="hidden"
-                name="cosmogonySlug"
-                value={props.cosmogony.slug}
-            />
             <input type="hidden" name="id" value={props.character.id} />
             <Input
                 name="name"

@@ -3,29 +3,33 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getChronicleBySlug } from '@/data/chronicles';
-import { getCosmogonyBySlug } from '@/data/cosmogonies';
+import { getCharacterBySlug } from '@/data/characters';
 
 export default async function CharacterPage(props: {
-    params: { cosmogonySlug: string; chronicleSlug: string };
+    params: { cosmogonySlug: string; characterSlug: string };
 }) {
-    const cosmogony = await getCosmogonyBySlug(props.params.cosmogonySlug);
-    const chronicle = await getChronicleBySlug(props.params.chronicleSlug);
+    const character = await getCharacterBySlug(props.params.characterSlug);
 
-    if (!chronicle) {
+    if (!character) {
         return notFound();
     }
 
     return (
         <Page
-            title={chronicle.title}
-            subtitle={`Chronicle in ${cosmogony.name}`}
+            title={character.name}
+            subtitle={`Character in ${character.cosmogony.name}`}
             breadcrumbs={[
-                { text: cosmogony.name, href: `/${cosmogony.slug}` },
-                { text: 'Chronicles', href: `/${cosmogony.slug}/chronicles` },
                 {
-                    text: chronicle.title,
-                    href: `/${cosmogony.slug}/chronicles/${chronicle.slug}`,
+                    text: character.cosmogony.name,
+                    href: `/${character.cosmogony.slug}`,
+                },
+                {
+                    text: 'Characters',
+                    href: `/${character.cosmogony.slug}/characters`,
+                },
+                {
+                    text: character.name,
+                    href: `/characters/${character.slug}`,
                 },
             ]}
             actions={[
@@ -33,7 +37,7 @@ export default async function CharacterPage(props: {
                     key="edit"
                     use="link"
                     variant="pageAction"
-                    href={`/${cosmogony.slug}/chronicles/${chronicle.slug}/edit`}
+                    href={`/characters/${character.slug}/edit`}
                 >
                     Edit
                 </Button>,
@@ -41,7 +45,7 @@ export default async function CharacterPage(props: {
         >
             <section className="prose text-justify text-xl">
                 <Markdown remarkPlugins={[remarkGfm]}>
-                    {chronicle.markdown}
+                    {character.markdown}
                 </Markdown>
             </section>
         </Page>

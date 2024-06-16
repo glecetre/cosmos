@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const cosmogoniesTable = sqliteTable('cosmogonies', {
@@ -13,6 +13,11 @@ export const cosmogoniesTable = sqliteTable('cosmogonies', {
         .notNull()
         .$onUpdate(() => new Date().toISOString()),
 });
+
+export const cosmogoniesRelations = relations(cosmogoniesTable, ({ many }) => ({
+    characters: many(charactersTable),
+    chronicles: many(chroniclesTable),
+}));
 
 export type SelectCosmogony = typeof cosmogoniesTable.$inferSelect;
 export type InsertCosmogony = typeof cosmogoniesTable.$inferInsert;
@@ -34,6 +39,13 @@ export const chroniclesTable = sqliteTable('chronicles', {
         .$onUpdate(() => new Date().toISOString()),
 });
 
+export const chroniclesRelations = relations(chroniclesTable, ({ one }) => ({
+    cosmogony: one(cosmogoniesTable, {
+        fields: [chroniclesTable.cosmogonyId],
+        references: [cosmogoniesTable.id],
+    }),
+}));
+
 export type SelectChronicle = typeof chroniclesTable.$inferSelect;
 export type InsertChronicle = typeof chroniclesTable.$inferInsert;
 
@@ -53,6 +65,13 @@ export const charactersTable = sqliteTable('characters', {
         .notNull()
         .$onUpdate(() => new Date().toISOString()),
 });
+
+export const charactersRelations = relations(charactersTable, ({ one }) => ({
+    cosmogony: one(cosmogoniesTable, {
+        fields: [charactersTable.cosmogonyId],
+        references: [cosmogoniesTable.id],
+    }),
+}));
 
 export type SelectCharacter = typeof charactersTable.$inferSelect;
 export type InsertCharacter = typeof charactersTable.$inferInsert;

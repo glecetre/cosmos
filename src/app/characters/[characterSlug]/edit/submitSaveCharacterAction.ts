@@ -25,9 +25,7 @@ export async function submitSaveCharacter(
 
     const updatedCharacter = await saveCharacter(parseResult.data);
 
-    redirect(
-        `/${parseResult.data.cosmogonySlug}/characters/${updatedCharacter.slug}`
-    );
+    redirect(`/characters/${updatedCharacter.slug}`);
 }
 
 type SubmitSavecharacterState = {
@@ -36,8 +34,6 @@ type SubmitSavecharacterState = {
 };
 
 const saveCharacterFormSchema = z.object({
-    cosmogonyId: z.coerce.number(),
-    cosmogonySlug: z.string(),
     id: z.coerce.number(),
     name: z.string().trim().min(1, { message: 'Name cannot be empty' }),
     markdown: z.string().default(''),

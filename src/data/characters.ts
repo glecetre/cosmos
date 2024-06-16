@@ -46,6 +46,9 @@ export async function getCharactersList(cosmogonyId: SelectCosmogony['id']) {
 export async function getCharacterBySlug(slug: string) {
     return database.query.charactersTable.findFirst({
         where: and(eq(charactersTable.slug, slug)),
+        with: {
+            cosmogony: true,
+        },
     });
 }
 

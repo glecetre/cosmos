@@ -25,9 +25,7 @@ export async function submitSaveChronicle(
 
     const updatedChronicle = await saveChronicle(parseResult.data);
 
-    redirect(
-        `/${parseResult.data.cosmogonySlug}/chronicles/${updatedChronicle.slug}`
-    );
+    redirect(`/chronicles/${updatedChronicle.slug}`);
 }
 
 type SubmitSaveChronicleState = {
@@ -36,8 +34,6 @@ type SubmitSaveChronicleState = {
 };
 
 const saveChronicleFormSchema = z.object({
-    cosmogonyId: z.coerce.number(),
-    cosmogonySlug: z.string(),
     id: z.coerce.number(),
     title: z.string().trim().min(1, { message: 'Title cannot be empty' }),
     markdown: z.string().default(''),
