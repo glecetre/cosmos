@@ -56,11 +56,11 @@ export async function getChronicleByCode(
 }
 
 /**
- * Save changes on an existing chronicle in a cosmogony.
- * @param chronicle Chronicle to save.
+ * Update changes on an existing chronicle in a cosmogony.
+ * @param chronicle Chronicle to update.
  * @returns The updated chronicle.
  */
-export async function saveChronicle(
+export async function updateChronicle(
     chronicle: Pick<SelectChronicle, 'id' | 'title' | 'markdown'>
 ) {
     await database

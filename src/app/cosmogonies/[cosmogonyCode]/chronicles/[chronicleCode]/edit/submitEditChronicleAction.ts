@@ -2,19 +2,19 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { saveChronicle } from '@/data/chronicles';
+import { updateChronicle } from '@/data/chronicles';
 
-export async function submitSaveChronicle(
-    _prevState: SubmitSaveChronicleState,
+export async function submitEditChronicle(
+    _prevState: SubmitEditChronicleState,
     formData: FormData
-): Promise<SubmitSaveChronicleState> {
+): Promise<SubmitEditChronicleState> {
     const input = Object.fromEntries(
         Array.from(formData).map(([fieldName, fieldValue]) => [
             fieldName,
             fieldValue.toString(),
         ])
     );
-    const parseResult = saveChronicleFormSchema.safeParse(input);
+    const parseResult = editChronicleFormSchema.safeParse(input);
 
     if (!parseResult.success) {
         return {
@@ -23,19 +23,19 @@ export async function submitSaveChronicle(
         };
     }
 
-    const updatedChronicle = await saveChronicle(parseResult.data);
+    const updatedChronicle = await updateChronicle(parseResult.data);
 
     redirect(
         `/cosmogonies/${updatedChronicle.cosmogony.shortCode}/chronicles/${updatedChronicle.shortCode}`
     );
 }
 
-type SubmitSaveChronicleState = {
+type SubmitEditChronicleState = {
     fields?: Record<string, string>;
-    errors?: z.inferFlattenedErrors<typeof saveChronicleFormSchema>;
+    errors?: z.inferFlattenedErrors<typeof editChronicleFormSchema>;
 };
 
-const saveChronicleFormSchema = z.object({
+const editChronicleFormSchema = z.object({
     id: z.coerce.number(),
     title: z.string().trim().min(1, { message: 'Title cannot be empty' }),
     markdown: z.string().default(''),

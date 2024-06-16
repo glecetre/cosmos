@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { submitSaveChronicle } from '@/app/cosmogonies/[cosmogonyCode]/chronicles/[chronicleCode]/edit/submitSaveChronicleAction';
+import { submitEditChronicle } from '@/app/cosmogonies/[cosmogonyCode]/chronicles/[chronicleCode]/edit/submitEditChronicleAction';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';
@@ -14,7 +14,7 @@ export type EditChronicleFormProps = {
 };
 
 export function EditChronicleForm(props: EditChronicleFormProps) {
-    const [submissionState, formAction] = useFormState(submitSaveChronicle, {});
+    const [submissionState, formAction] = useFormState(submitEditChronicle, {});
 
     return (
         <Form id={EDIT_CHRONICLE_FORM_ID} action={formAction}>
