@@ -1,6 +1,7 @@
 import { and, count, eq } from 'drizzle-orm';
 import { database } from '@/data/database';
 import {
+    InsertCharacter,
     SelectCharacter,
     SelectCosmogony,
     charactersTable,
@@ -83,4 +84,17 @@ export async function updateCharacter(
 
     return (await getCharacterById(character.id))!; // Force non-null as we know this exists because we've just updated it.
 }
+
+/**
+ * Create a new character.
+ * @param character Character to create.
+ * @returns The created character, if succeeded.
+ */
+export async function createCharacter(character: InsertCharacter) {
+    const [{ insertedId }] = await database
+        .insert(charactersTable)
+        .values(character)
+        .returning({ insertedId: charactersTable.id });
+
+    return (await getCharacterById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
 }

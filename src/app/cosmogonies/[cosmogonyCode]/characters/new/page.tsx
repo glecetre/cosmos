@@ -1,20 +1,25 @@
+import { notFound } from 'next/navigation';
+import {
+    CREATE_CHARACTER_FORM_ID,
+    CreateCharacterForm,
+} from '@/app/cosmogonies/[cosmogonyCode]/characters/new/CreateCharacterForm';
 import { Button } from '@/components/Button';
-import { List } from '@/components/List';
-import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
-import { getCharactersList } from '@/data/characters';
 import { getCosmogonyByCode } from '@/data/cosmogonies';
 
-export default async function CharactersPage(props: {
+export default async function CharacterEditPage(props: {
     params: { cosmogonyCode: string };
 }) {
     const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
-    const characters = await getCharactersList(cosmogony.id);
+
+    if (!cosmogony) {
+        return notFound();
+    }
 
     return (
         <Page
-            title="Characters"
-            subtitle={`in ${cosmogony.name}`}
+            title={`Creating character`}
+            subtitle={`In ${cosmogony.name}`}
             breadcrumbs={[
                 {
                     text: cosmogony.name,
@@ -27,24 +32,24 @@ export default async function CharactersPage(props: {
             ]}
             actions={[
                 <Button
-                    key="goto-create"
+                    key="save"
+                    variant="pageAction"
+                    primary
+                    form={CREATE_CHARACTER_FORM_ID}
+                >
+                    Save
+                </Button>,
+                <Button
+                    key="cancel"
                     use="link"
-                    href={`/cosmogonies/${cosmogony.shortCode}/characters/new`}
+                    href={`/cosmogonies/${cosmogony.shortCode}/characters`}
                     variant="pageAction"
                 >
-                    Create
+                    Cancel
                 </Button>,
             ]}
         >
-            <List>
-                {characters.map((character) => (
-                    <ListItem
-                        key={character.id}
-                        title={character.name}
-                        href={`/cosmogonies/${cosmogony.shortCode}/characters/${character.shortCode}`}
-                    />
-                ))}
-            </List>
+            <CreateCharacterForm cosmogonyId={cosmogony.id} />
         </Page>
     );
 }
