@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { submitSaveCharacter } from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/submitSaveCharacterAction';
+import { submitEditCharacter } from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/submitEditCharacterAction';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
 import { Textarea } from '@/components/Textarea';
@@ -14,7 +14,7 @@ export type EditCharacterFormProps = {
 };
 
 export function EditCharacterForm(props: EditCharacterFormProps) {
-    const [submissionState, formAction] = useFormState(submitSaveCharacter, {});
+    const [submissionState, formAction] = useFormState(submitEditCharacter, {});
 
     return (
         <Form id={EDIT_CHARACTER_FORM_ID} action={formAction}>

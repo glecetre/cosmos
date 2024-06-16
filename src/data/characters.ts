@@ -39,6 +39,20 @@ export async function getCharactersList(cosmogonyId: SelectCosmogony['id']) {
 }
 
 /**
+ * Get a character by its ID.
+ * @param id ID of the character to fetch.
+ * @returns The character or `undefined` if not found.
+ */
+export async function getCharacterById(id: SelectCharacter['id']) {
+    return database.query.charactersTable.findFirst({
+        where: and(eq(charactersTable.id, id)),
+        with: {
+            cosmogony: true,
+        },
+    });
+}
+
+/**
  * Get a character by its short code.
  * @param shortCode Short code of the character to fetch.
  * @returns The character or `undefined` if not found.
@@ -55,11 +69,11 @@ export async function getCharacterByCode(
 }
 
 /**
- * Save changes on an existing character in a cosmogony.
- * @param character Character to save.
+ * Update changes on an existing character in a cosmogony.
+ * @param character Character to update.
  * @returns The updated character.
  */
-export async function saveCharacter(
+export async function updateCharacter(
     character: Pick<SelectCharacter, 'id' | 'name' | 'markdown'>
 ) {
     await database
@@ -67,10 +81,6 @@ export async function saveCharacter(
         .set(character)
         .where(eq(charactersTable.id, character.id));
 
-    return (await database.query.charactersTable.findFirst({
-        where: eq(charactersTable.id, character.id),
-        with: {
-            cosmogony: true,
-        },
-    }))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getCharacterById(character.id))!; // Force non-null as we know this exists because we've just updated it.
+}
 }

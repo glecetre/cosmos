@@ -2,19 +2,19 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { saveCharacter } from '@/data/characters';
+import { updateCharacter } from '@/data/characters';
 
-export async function submitSaveCharacter(
-    _prevState: SubmitSavecharacterState,
+export async function submitEditCharacter(
+    _prevState: SubmitEditCharacterState,
     formData: FormData
-): Promise<SubmitSavecharacterState> {
+): Promise<SubmitEditCharacterState> {
     const input = Object.fromEntries(
         Array.from(formData).map(([fieldName, fieldValue]) => [
             fieldName,
             fieldValue.toString(),
         ])
     );
-    const parseResult = saveCharacterFormSchema.safeParse(input);
+    const parseResult = editCharacterFormSchema.safeParse(input);
 
     if (!parseResult.success) {
         return {
@@ -23,19 +23,19 @@ export async function submitSaveCharacter(
         };
     }
 
-    const updatedCharacter = await saveCharacter(parseResult.data);
+    const updatedCharacter = await updateCharacter(parseResult.data);
 
     redirect(
         `/cosmogonies/${updatedCharacter.cosmogony.shortCode}/characters/${updatedCharacter.shortCode}`
     );
 }
 
-type SubmitSavecharacterState = {
+type SubmitEditCharacterState = {
     fields?: Record<string, string>;
-    errors?: z.inferFlattenedErrors<typeof saveCharacterFormSchema>;
+    errors?: z.inferFlattenedErrors<typeof editCharacterFormSchema>;
 };
 
-const saveCharacterFormSchema = z.object({
+const editCharacterFormSchema = z.object({
     id: z.coerce.number(),
     name: z.string().trim().min(1, { message: 'Name cannot be empty' }),
     markdown: z.string().default(''),
