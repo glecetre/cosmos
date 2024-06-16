@@ -1,6 +1,10 @@
 import { and, count, eq } from 'drizzle-orm';
 import { database } from '@/data/database';
-import { SelectCosmogony, chroniclesTable } from '@/data/schema';
+import {
+    SelectChronicle,
+    SelectCosmogony,
+    chroniclesTable,
+} from '@/data/schema';
 
 /**
  * Get the number of chronicles in a cosmogony.
@@ -44,4 +48,26 @@ export async function getChronicleBySlug(slug: string) {
     return database.query.chroniclesTable.findFirst({
         where: and(eq(chroniclesTable.slug, slug)),
     });
+}
+
+/**
+ * Save changes on an existing chronicle in a cosmogony.
+ * @param chronicle Chronicle to save.
+ * @returns The updated chronicle.
+ */
+export async function saveChronicle(
+    chronicle: Pick<SelectChronicle, 'id' | 'title' | 'markdown'>
+) {
+    const chronicleToSave = {
+        ...chronicle,
+        slug: encodeURIComponent(chronicle.title).toLocaleLowerCase(),
+    };
+
+    const updatedChronicles = await database
+        .update(chroniclesTable)
+        .set(chronicleToSave)
+        .where(eq(chroniclesTable.id, chronicle.id))
+        .returning();
+
+    return updatedChronicles[0];
 }
