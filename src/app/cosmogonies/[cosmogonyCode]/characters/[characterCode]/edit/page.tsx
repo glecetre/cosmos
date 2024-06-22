@@ -5,12 +5,12 @@ import {
 } from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/EditCharacterForm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getCharacterByCode } from '@/data/characters';
+import { charactersApi } from '@/data/characters';
 
 export default async function CharacterEditPage(props: {
     params: { characterCode: string; cosmogonyCode: string };
 }) {
-    const character = await getCharacterByCode(props.params.characterCode);
+    const character = await charactersApi.getByCode(props.params.characterCode);
 
     if (
         !character ||

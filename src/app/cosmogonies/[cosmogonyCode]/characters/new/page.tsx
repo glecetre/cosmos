@@ -5,12 +5,14 @@ import {
 } from '@/app/cosmogonies/[cosmogonyCode]/characters/new/CreateCharacterForm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getCosmogonyByCode } from '@/data/cosmogonies';
+import { cosmogoniesApi } from '@/data/cosmogonies';
 
 export default async function CharacterEditPage(props: {
     params: { cosmogonyCode: string };
 }) {
-    const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
 
     if (!cosmogony) {
         return notFound();

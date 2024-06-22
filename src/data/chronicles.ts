@@ -12,7 +12,7 @@ import {
  * @param cosmogonyId ID of the cosmogony to fetch the count from.
  * @returns The number of chronicles in the cosmogony.
  */
-export async function getChroniclesCount(cosmogonyId: SelectCosmogony['id']) {
+async function getCount(cosmogonyId: SelectCosmogony['id']) {
     const result = await database
         .select({
             value: count(),
@@ -28,7 +28,7 @@ export async function getChroniclesCount(cosmogonyId: SelectCosmogony['id']) {
  * @param cosmogonyId ID of the cosmogony to fetch the chronicles from.
  * @returns The list of chronicles in the cosmogony.
  */
-export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
+async function getAll(cosmogonyId: SelectCosmogony['id']) {
     return database
         .select({
             id: chroniclesTable.id,
@@ -44,7 +44,7 @@ export async function getChroniclesList(cosmogonyId: SelectCosmogony['id']) {
  * @param id ID of the chronicle to fetch.
  * @returns The chronicle or `undefined` if not found.
  */
-export async function getChronicleById(id: SelectChronicle['id']) {
+async function getById(id: SelectChronicle['id']) {
     return database.query.chroniclesTable.findFirst({
         where: and(eq(chroniclesTable.id, id)),
         with: {
@@ -58,9 +58,7 @@ export async function getChronicleById(id: SelectChronicle['id']) {
  * @param shortCode Short code of the chronicle to fetch.
  * @returns The chronicle or `undefined` if not found.
  */
-export async function getChronicleByCode(
-    shortCode: SelectChronicle['shortCode']
-) {
+async function getByCode(shortCode: SelectChronicle['shortCode']) {
     return database.query.chroniclesTable.findFirst({
         where: and(eq(chroniclesTable.shortCode, shortCode)),
         with: {
@@ -74,7 +72,7 @@ export async function getChronicleByCode(
  * @param chronicle Chronicle to update.
  * @returns The updated chronicle.
  */
-export async function updateChronicle(
+async function update(
     chronicle: Pick<SelectChronicle, 'id' | 'title' | 'markdown'>
 ) {
     await database
@@ -82,7 +80,7 @@ export async function updateChronicle(
         .set(chronicle)
         .where(eq(chroniclesTable.id, chronicle.id));
 
-    return (await getChronicleById(chronicle.id))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getById(chronicle.id))!; // Force non-null as we know this exists because we've just updated it.
 }
 
 /**
@@ -90,11 +88,20 @@ export async function updateChronicle(
  * @param chronicle Chronicle to create.
  * @returns The created chronicle, if succeeded.
  */
-export async function createChronicle(chronicle: InsertChronicle) {
+async function create(chronicle: InsertChronicle) {
     const [{ insertedId }] = await database
         .insert(chroniclesTable)
         .values(chronicle)
         .returning({ insertedId: chroniclesTable.id });
 
-    return (await getChronicleById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
 }
+
+export const chroniclesApi = {
+    getCount,
+    getAll,
+    getByCode,
+    getById,
+    update,
+    create,
+};

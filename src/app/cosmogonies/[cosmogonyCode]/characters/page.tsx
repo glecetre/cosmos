@@ -2,14 +2,16 @@ import { Button } from '@/components/Button';
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
-import { getCharactersList } from '@/data/characters';
-import { getCosmogonyByCode } from '@/data/cosmogonies';
+import { charactersApi } from '@/data/characters';
+import { cosmogoniesApi } from '@/data/cosmogonies';
 
 export default async function CharactersPage(props: {
     params: { cosmogonyCode: string };
 }) {
-    const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
-    const characters = await getCharactersList(cosmogony.id);
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+    const characters = await charactersApi.getAll(cosmogony.id);
 
     return (
         <Page

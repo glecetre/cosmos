@@ -3,12 +3,12 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getChronicleByCode } from '@/data/chronicles';
+import { chroniclesApi } from '@/data/chronicles';
 
 export default async function CharacterPage(props: {
     params: { chronicleCode: string; cosmogonyCode: string };
 }) {
-    const chronicle = await getChronicleByCode(props.params.chronicleCode);
+    const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
     if (
         !chronicle ||

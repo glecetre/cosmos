@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createCharacter } from '@/data/characters';
+import { charactersApi } from '@/data/characters';
 
 export async function submitCreateCharacter(
     _prevState: SubmitCreateCharacterState,
@@ -23,7 +23,7 @@ export async function submitCreateCharacter(
         };
     }
 
-    const createdCharacter = await createCharacter(parseResult.data);
+    const createdCharacter = await charactersApi.create(parseResult.data);
 
     redirect(
         `/cosmogonies/${createdCharacter.cosmogony.shortCode}/characters/${createdCharacter.shortCode}`

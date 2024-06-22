@@ -2,13 +2,11 @@ import { eq } from 'drizzle-orm';
 import { database } from '@/data/database';
 import { cosmogoniesTable, SelectCosmogony } from '@/data/schema';
 
-export type Cosmogony = SelectCosmogony;
-
 /**
  * Get all the cosmogonies.
  * @returns All cosmogonies.
  */
-export async function getAllCosmogonies() {
+async function getAll() {
     return database.select().from(cosmogoniesTable);
 }
 
@@ -17,9 +15,7 @@ export async function getAllCosmogonies() {
  * @param shortCode Short code of the cosmogony to fetch.
  * @returns The cosmogony.
  */
-export async function getCosmogonyByCode(
-    shortCode: SelectCosmogony['shortCode']
-) {
+async function getByCode(shortCode: SelectCosmogony['shortCode']) {
     const result = await database
         .select()
         .from(cosmogoniesTable)
@@ -28,3 +24,10 @@ export async function getCosmogonyByCode(
 
     return result[0];
 }
+
+export type Cosmogony = SelectCosmogony;
+
+export const cosmogoniesApi = {
+    getAll,
+    getByCode,
+};

@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { updateCharacter } from '@/data/characters';
+import { charactersApi } from '@/data/characters';
 
 export async function submitEditCharacter(
     _prevState: SubmitEditCharacterState,
@@ -23,7 +23,7 @@ export async function submitEditCharacter(
         };
     }
 
-    const updatedCharacter = await updateCharacter(parseResult.data);
+    const updatedCharacter = await charactersApi.update(parseResult.data);
 
     redirect(
         `/cosmogonies/${updatedCharacter.cosmogony.shortCode}/characters/${updatedCharacter.shortCode}`

@@ -3,12 +3,12 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getCharacterByCode } from '@/data/characters';
+import { charactersApi } from '@/data/characters';
 
 export default async function CharacterPage(props: {
     params: { characterCode: string; cosmogonyCode: string };
 }) {
-    const character = await getCharacterByCode(props.params.characterCode);
+    const character = await charactersApi.getByCode(props.params.characterCode);
 
     if (
         !character ||

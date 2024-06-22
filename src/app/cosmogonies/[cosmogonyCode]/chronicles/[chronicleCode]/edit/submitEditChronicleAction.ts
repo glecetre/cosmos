@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { updateChronicle } from '@/data/chronicles';
+import { chroniclesApi } from '@/data/chronicles';
 
 export async function submitEditChronicle(
     _prevState: SubmitEditChronicleState,
@@ -23,7 +23,7 @@ export async function submitEditChronicle(
         };
     }
 
-    const updatedChronicle = await updateChronicle(parseResult.data);
+    const updatedChronicle = await chroniclesApi.update(parseResult.data);
 
     redirect(
         `/cosmogonies/${updatedChronicle.cosmogony.shortCode}/chronicles/${updatedChronicle.shortCode}`

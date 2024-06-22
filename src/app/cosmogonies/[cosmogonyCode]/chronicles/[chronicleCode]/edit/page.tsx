@@ -5,12 +5,12 @@ import {
 } from '@/app/cosmogonies/[cosmogonyCode]/chronicles/[chronicleCode]/edit/EditChronicleForm';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
-import { getChronicleByCode } from '@/data/chronicles';
+import { chroniclesApi } from '@/data/chronicles';
 
 export default async function ChronicleEditPage(props: {
     params: { chronicleCode: string; cosmogonyCode: string };
 }) {
-    const chronicle = await getChronicleByCode(props.params.chronicleCode);
+    const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
     if (
         !chronicle ||

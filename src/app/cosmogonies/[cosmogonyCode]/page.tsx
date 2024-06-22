@@ -1,16 +1,18 @@
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
-import { getCharactersCount } from '@/data/characters';
-import { getChroniclesCount } from '@/data/chronicles';
-import { getCosmogonyByCode } from '@/data/cosmogonies';
+import { charactersApi } from '@/data/characters';
+import { chroniclesApi } from '@/data/chronicles';
+import { cosmogoniesApi } from '@/data/cosmogonies';
 
 export default async function CosmogonyPage(props: {
     params: { cosmogonyCode: string };
 }) {
-    const cosmogony = await getCosmogonyByCode(props.params.cosmogonyCode);
-    const chroniclesCount = await getChroniclesCount(cosmogony.id);
-    const charactersCount = await getCharactersCount(cosmogony.id);
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+    const chroniclesCount = await chroniclesApi.getCount(cosmogony.id);
+    const charactersCount = await charactersApi.getCount(cosmogony.id);
 
     return (
         <Page title={cosmogony.name} subtitle="Cosmogony">

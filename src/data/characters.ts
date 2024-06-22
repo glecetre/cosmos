@@ -12,7 +12,7 @@ import {
  * @param cosmogonyId ID of the cosmogony to fetch the count from.
  * @returns The number of characters in the cosmogony.
  */
-export async function getCharactersCount(cosmogonyId: SelectCosmogony['id']) {
+async function getCount(cosmogonyId: SelectCosmogony['id']) {
     const result = await database
         .select({
             value: count(),
@@ -28,7 +28,7 @@ export async function getCharactersCount(cosmogonyId: SelectCosmogony['id']) {
  * @param cosmogonyId ID of the cosmogony to fetch the characters from.
  * @returns The list of characters in the cosmogony.
  */
-export async function getCharactersList(cosmogonyId: SelectCosmogony['id']) {
+async function getAll(cosmogonyId: SelectCosmogony['id']) {
     return database
         .select({
             id: charactersTable.id,
@@ -44,7 +44,7 @@ export async function getCharactersList(cosmogonyId: SelectCosmogony['id']) {
  * @param id ID of the character to fetch.
  * @returns The character or `undefined` if not found.
  */
-export async function getCharacterById(id: SelectCharacter['id']) {
+async function getById(id: SelectCharacter['id']) {
     return database.query.charactersTable.findFirst({
         where: and(eq(charactersTable.id, id)),
         with: {
@@ -58,9 +58,7 @@ export async function getCharacterById(id: SelectCharacter['id']) {
  * @param shortCode Short code of the character to fetch.
  * @returns The character or `undefined` if not found.
  */
-export async function getCharacterByCode(
-    shortCode: SelectCharacter['shortCode']
-) {
+async function getByCode(shortCode: SelectCharacter['shortCode']) {
     return database.query.charactersTable.findFirst({
         where: and(eq(charactersTable.shortCode, shortCode)),
         with: {
@@ -74,7 +72,7 @@ export async function getCharacterByCode(
  * @param character Character to update.
  * @returns The updated character.
  */
-export async function updateCharacter(
+async function update(
     character: Pick<SelectCharacter, 'id' | 'name' | 'markdown'>
 ) {
     await database
@@ -82,7 +80,7 @@ export async function updateCharacter(
         .set(character)
         .where(eq(charactersTable.id, character.id));
 
-    return (await getCharacterById(character.id))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getById(character.id))!; // Force non-null as we know this exists because we've just updated it.
 }
 
 /**
@@ -90,11 +88,20 @@ export async function updateCharacter(
  * @param character Character to create.
  * @returns The created character, if succeeded.
  */
-export async function createCharacter(character: InsertCharacter) {
+async function create(character: InsertCharacter) {
     const [{ insertedId }] = await database
         .insert(charactersTable)
         .values(character)
         .returning({ insertedId: charactersTable.id });
 
-    return (await getCharacterById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
+    return (await getById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
 }
+
+export const charactersApi = {
+    getCount,
+    getAll,
+    getByCode,
+    getById,
+    update,
+    create,
+};
