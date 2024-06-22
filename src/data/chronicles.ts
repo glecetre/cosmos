@@ -6,6 +6,7 @@ import {
     SelectCosmogony,
     chroniclesTable,
 } from '@/data/schema';
+import { SearchDocument, searchApi } from '@/data/search';
 
 /**
  * Get the number of chronicles in a cosmogony.
@@ -80,7 +81,14 @@ async function update(
         .set(chronicle)
         .where(eq(chroniclesTable.id, chronicle.id));
 
-    return (await getById(chronicle.id))!; // Force non-null as we know this exists because we've just updated it.
+    // Force non-null as we know this exists because we've just updated it.
+    const updatedChronicle = (await getById(chronicle.id))!;
+    searchApi.addOrUpdateDocument(
+        'chronicles',
+        stripForSearch(updatedChronicle)
+    );
+
+    return updatedChronicle;
 }
 
 /**
@@ -94,8 +102,17 @@ async function create(chronicle: InsertChronicle) {
         .values(chronicle)
         .returning({ insertedId: chroniclesTable.id });
 
-    return (await getById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
+    // Force non-null as we know this exists because we've just updated it.
+    const createdChronicle = (await getById(insertedId))!;
+    searchApi.addOrUpdateDocument(
+        'chronicles',
+        stripForSearch(createdChronicle)
+    );
+
+    return createdChronicle;
 }
+
+export type Chronicle = SelectChronicle;
 
 export const chroniclesApi = {
     getCount,
@@ -105,3 +122,25 @@ export const chroniclesApi = {
     update,
     create,
 };
+
+/* -----------------------------------------------------------------------------
+ *
+ * Search utilities
+ *
+ * -------------------------------------------------------------------------- */
+type ChronicleSearchDocument = ReturnType<typeof stripForSearch>;
+
+/**
+ * Create a new object from a {@link Chronicle} with only fields relevant to
+ * search.
+ * @param chronicle Chronicle to strip.
+ * @returns A search-relevant chronicle object.
+ */
+function stripForSearch(chronicle: Chronicle) {
+    return {
+        id: chronicle.id,
+        title: chronicle.title,
+        markdown: chronicle.markdown,
+        cosmogonyId: chronicle.cosmogonyId,
+    } satisfies SearchDocument;
+}

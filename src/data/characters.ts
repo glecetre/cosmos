@@ -6,6 +6,7 @@ import {
     SelectCosmogony,
     charactersTable,
 } from '@/data/schema';
+import { SearchDocument, searchApi } from '@/data/search';
 
 /**
  * Get the number of characters in a cosmogony.
@@ -80,7 +81,14 @@ async function update(
         .set(character)
         .where(eq(charactersTable.id, character.id));
 
-    return (await getById(character.id))!; // Force non-null as we know this exists because we've just updated it.
+    // Force non-null as we know this exists because we've just updated it.
+    const updatedCharacter = (await getById(character.id))!;
+    searchApi.addOrUpdateDocument(
+        'characters',
+        stripForSearch(updatedCharacter)
+    );
+
+    return updatedCharacter;
 }
 
 /**
@@ -94,8 +102,17 @@ async function create(character: InsertCharacter) {
         .values(character)
         .returning({ insertedId: charactersTable.id });
 
-    return (await getById(insertedId))!; // Force non-null as we know this exists because we've just updated it.
+    // Force non-null as we know this exists because we've just updated it.
+    const createdCharacter = (await getById(insertedId))!;
+    searchApi.addOrUpdateDocument(
+        'characters',
+        stripForSearch(createdCharacter)
+    );
+
+    return createdCharacter;
 }
+
+export type Character = SelectCharacter;
 
 export const charactersApi = {
     getCount,
@@ -105,3 +122,25 @@ export const charactersApi = {
     update,
     create,
 };
+
+/* -----------------------------------------------------------------------------
+ *
+ * Search utilities
+ *
+ * -------------------------------------------------------------------------- */
+type CharacterSearchDocument = ReturnType<typeof stripForSearch>;
+
+/**
+ * Create a new object from a {@link Character} with only fields relevant to
+ * search.
+ * @param character Character to strip.
+ * @returns A search-relevant character object.
+ */
+function stripForSearch(character: Character) {
+    return {
+        id: character.id,
+        name: character.name,
+        markdown: character.markdown,
+        cosmogonyId: character.cosmogonyId,
+    } satisfies SearchDocument;
+}
