@@ -10,6 +10,7 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
+                sand: '#E8E6DD',
                 grandis: {
                     '50': '#fff9ed',
                     '100': '#fff3d4',

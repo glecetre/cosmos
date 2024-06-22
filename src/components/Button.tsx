@@ -8,6 +8,7 @@ const buttonClassname = cva({
         variant: {
             inline: 'hover:underline',
             button: 'border border-black/20',
+            icon: 'border border-black/20 p-3',
             pageAction: 'flex items-center',
         },
         primary: {
@@ -21,17 +22,17 @@ const buttonClassname = cva({
             class: 'px-4 py-2',
         },
         {
-            variant: ['button', 'pageAction'],
+            variant: ['button', 'pageAction', 'icon'],
             primary: true,
             class: 'bg-grandis-300 hover:bg-grandis-900 hover:text-grandis-400',
         },
         {
-            variant: ['button', 'pageAction'],
+            variant: ['button', 'pageAction', 'icon'],
             primary: false,
             class: 'hover:bg-black/80 hover:text-white/80',
         },
         {
-            variant: 'button',
+            variant: ['button', 'icon'],
             primary: false,
             class: 'bg-white/50',
         },

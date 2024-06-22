@@ -6,7 +6,7 @@ import {
     SelectCosmogony,
     chroniclesTable,
 } from '@/data/schema';
-import { SearchDocument, searchApi } from '@/data/search';
+import { addOrUpdateChronicleToIndex } from '@/search';
 
 /**
  * Get the number of chronicles in a cosmogony.
@@ -83,10 +83,7 @@ async function update(
 
     // Force non-null as we know this exists because we've just updated it.
     const updatedChronicle = (await getById(chronicle.id))!;
-    searchApi.addOrUpdateDocument(
-        'chronicles',
-        stripForSearch(updatedChronicle)
-    );
+    addOrUpdateChronicleToIndex(updatedChronicle);
 
     return updatedChronicle;
 }
@@ -104,10 +101,7 @@ async function create(chronicle: InsertChronicle) {
 
     // Force non-null as we know this exists because we've just updated it.
     const createdChronicle = (await getById(insertedId))!;
-    searchApi.addOrUpdateDocument(
-        'chronicles',
-        stripForSearch(createdChronicle)
-    );
+    addOrUpdateChronicleToIndex(createdChronicle);
 
     return createdChronicle;
 }
@@ -122,25 +116,3 @@ export const chroniclesApi = {
     update,
     create,
 };
-
-/* -----------------------------------------------------------------------------
- *
- * Search utilities
- *
- * -------------------------------------------------------------------------- */
-type ChronicleSearchDocument = ReturnType<typeof stripForSearch>;
-
-/**
- * Create a new object from a {@link Chronicle} with only fields relevant to
- * search.
- * @param chronicle Chronicle to strip.
- * @returns A search-relevant chronicle object.
- */
-function stripForSearch(chronicle: Chronicle) {
-    return {
-        id: chronicle.id,
-        title: chronicle.title,
-        markdown: chronicle.markdown,
-        cosmogonyId: chronicle.cosmogonyId,
-    } satisfies SearchDocument;
-}

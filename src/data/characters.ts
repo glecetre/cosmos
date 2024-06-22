@@ -6,7 +6,7 @@ import {
     SelectCosmogony,
     charactersTable,
 } from '@/data/schema';
-import { SearchDocument, searchApi } from '@/data/search';
+import { addOrUpdateCharacterToIndex } from '@/search';
 
 /**
  * Get the number of characters in a cosmogony.
@@ -83,10 +83,7 @@ async function update(
 
     // Force non-null as we know this exists because we've just updated it.
     const updatedCharacter = (await getById(character.id))!;
-    searchApi.addOrUpdateDocument(
-        'characters',
-        stripForSearch(updatedCharacter)
-    );
+    addOrUpdateCharacterToIndex(updatedCharacter);
 
     return updatedCharacter;
 }
@@ -104,10 +101,7 @@ async function create(character: InsertCharacter) {
 
     // Force non-null as we know this exists because we've just updated it.
     const createdCharacter = (await getById(insertedId))!;
-    searchApi.addOrUpdateDocument(
-        'characters',
-        stripForSearch(createdCharacter)
-    );
+    addOrUpdateCharacterToIndex(createdCharacter);
 
     return createdCharacter;
 }
@@ -122,25 +116,3 @@ export const charactersApi = {
     update,
     create,
 };
-
-/* -----------------------------------------------------------------------------
- *
- * Search utilities
- *
- * -------------------------------------------------------------------------- */
-type CharacterSearchDocument = ReturnType<typeof stripForSearch>;
-
-/**
- * Create a new object from a {@link Character} with only fields relevant to
- * search.
- * @param character Character to strip.
- * @returns A search-relevant character object.
- */
-function stripForSearch(character: Character) {
-    return {
-        id: character.id,
-        name: character.name,
-        markdown: character.markdown,
-        cosmogonyId: character.cosmogonyId,
-    } satisfies SearchDocument;
-}

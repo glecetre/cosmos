@@ -19,10 +19,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html
-            lang="en"
-            className={`h-full bg-[#E8E6DD] ${spaceGrotesk.variable}`}
-        >
+        <html lang="en" className={`bg-sand h-full ${spaceGrotesk.variable}`}>
             <body className="flex min-h-full flex-col">
                 <div className="mx-auto w-full max-w-[90ch]">
                     <Header />
