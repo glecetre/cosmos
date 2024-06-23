@@ -3,6 +3,11 @@
 import { Meilisearch } from 'meilisearch';
 import { Character } from '@/data/characters';
 import { Chronicle } from '@/data/chronicles';
+import {
+    SEARCH_HIGHLIGHT_TAG_END,
+    SEARCH_HIGHLIGHT_TAG_START,
+    SearchDocument,
+} from '@/search/common';
 
 const HOST = process.env.MEILI_HTTP_ADDR;
 const API_KEY = process.env.MEILI_MASTER_KEY;
@@ -18,16 +23,6 @@ const meilisearch = new Meilisearch({
 });
 
 const SEARCH_INDEX = 'cosmos';
-export type SearchDocument = {
-    id: number;
-    type: 'character' | 'chronicle';
-    cosmogonyId: number;
-    shortCode: string;
-    name: string;
-    markdown: string;
-};
-export type SearchResults = Awaited<ReturnType<typeof search>>;
-export type SearchResultHit = SearchResults['hits'][number];
 
 /**
  * Add or update a character in the search index.
@@ -68,7 +63,9 @@ export async function search(query: string, abortSignal?: AbortSignal) {
             query,
             {
                 attributesToCrop: ['markdown'],
-                showRankingScore: true,
+                attributesToHighlight: ['markdown'],
+                highlightPreTag: SEARCH_HIGHLIGHT_TAG_START,
+                highlightPostTag: SEARCH_HIGHLIGHT_TAG_END,
             },
             { signal: abortSignal }
         );
