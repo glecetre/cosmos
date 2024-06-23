@@ -25,32 +25,36 @@ export function SearchButton(props: SearchButtonProps) {
             </Button>
             <dialog
                 ref={dialogElement}
-                className="mt-[88px] w-full max-w-[90ch] border border-black/20 bg-sand p-10 shadow-sm backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+                className="mb-[88px] mt-[88px] max-h-[calc(100%_-_2_*_88px)] w-full max-w-[90ch] border border-black/20 bg-sand p-10 pt-0 shadow-sm backdrop:bg-black/50 backdrop:backdrop-blur-sm"
                 onClose={navigateToResult}
             >
-                <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-xl font-bold">
-                        Search all cosmogonies
-                    </h1>
-                    <Button
-                        title="Close Search"
-                        variant="icon"
-                        onClick={closeModal}
-                    >
-                        <Icon name="cross" />
-                    </Button>
+                <div className="sticky top-0 bg-sand pt-10">
+                    <div className="mb-6 flex items-center justify-between">
+                        <h1 className="text-xl font-bold">
+                            Search all cosmogonies
+                        </h1>
+                        <Button
+                            title="Close Search"
+                            variant="icon"
+                            onClick={closeModal}
+                        >
+                            <Icon name="cross" />
+                        </Button>
+                    </div>
+                    <Input
+                        label="Query"
+                        type="search"
+                        autoFocus
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                    />
                 </div>
-                <Input
-                    label="Query"
-                    type="search"
-                    autoFocus
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                />
-                <SearchResultsList
-                    results={searchResults}
-                    cosmogonies={props.cosmogonies}
-                />
+                <div>
+                    <SearchResultsList
+                        results={searchResults}
+                        cosmogonies={props.cosmogonies}
+                    />
+                </div>
             </dialog>
         </>
     );

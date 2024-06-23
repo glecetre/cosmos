@@ -32,7 +32,7 @@ export function SearchResultsList(props: SearchResultsListProps) {
                     <ListItem
                         key={result.shortCode}
                         title={result.name}
-                        subtitle={RESULT_TYPE_DISPLAY_NAME[result.type]}
+                        subtitle={getResultSubtitle(result)}
                         action={
                             <Button
                                 variant="button"
@@ -47,10 +47,19 @@ export function SearchResultsList(props: SearchResultsListProps) {
         </form>
     );
 
+    function getResultSubtitle(result: SearchResultHit) {
+        let subtitle = RESULT_TYPE_DISPLAY_NAME[result.type];
+
+        const cosmogony = getResultCosmogony(result);
+        if (cosmogony) {
+            subtitle += ` in ${cosmogony.name}`;
+        }
+
+        return subtitle;
+    }
+
     function getResultUrl(result: SearchResultHit) {
-        const cosmogonyShortCode = props.cosmogonies.find(
-            (cosmogony) => cosmogony.id === result.cosmogonyId
-        )?.shortCode;
+        const cosmogonyShortCode = getResultCosmogony(result)?.shortCode;
 
         if (!cosmogonyShortCode) {
             return;
@@ -62,5 +71,11 @@ export function SearchResultsList(props: SearchResultsListProps) {
             case 'chronicle':
                 return `/cosmogonies/${cosmogonyShortCode}/chronicles/${result.shortCode}`;
         }
+    }
+
+    function getResultCosmogony(result: SearchResultHit) {
+        return props.cosmogonies.find(
+            (cosmogony) => cosmogony.id === result.cosmogonyId
+        );
     }
 }
