@@ -1,9 +1,11 @@
+import { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 
 export type ListItemProps = {
     title: string;
     subtitle?: string;
     href?: string;
+    action?: ReactNode;
     actionText?: string;
 };
 
@@ -22,6 +24,8 @@ export function ListItem(props: ListItemProps) {
                     {props.actionText ?? 'View'}&nbsp;→
                 </Button>
             )}
+
+            {props.action ?? null}
         </li>
     );
 }

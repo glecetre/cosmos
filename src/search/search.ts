@@ -27,6 +27,7 @@ export type SearchDocument = {
     markdown: string;
 };
 export type SearchResults = Awaited<ReturnType<typeof search>>;
+export type SearchResultHit = SearchResults['hits'][number];
 
 /**
  * Add or update a character in the search index.

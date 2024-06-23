@@ -1,16 +1,22 @@
 'use client';
 
-import { ChangeEvent, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import { Button } from '@/components/Button';
 import { Icon } from '@/components/Icon';
 import { Input } from '@/components/Input';
-import { List } from '@/components/List';
-import { ListItem } from '@/components/ListItem';
-import { SearchDocument, useSearch } from '@/search';
+import { SearchResultsList } from '@/components/Search/SearchResultsList';
+import { Cosmogony } from '@/data/cosmogonies';
+import { useSearch } from '@/search';
 
-export function SearchButton() {
+type SearchButtonProps = {
+    cosmogonies: Cosmogony[];
+};
+
+export function SearchButton(props: SearchButtonProps) {
     const dialogElement = useRef<HTMLDialogElement>(null);
     const [searchQuery, setSearchQuery, searchResults] = useSearch();
+    const router = useRouter();
 
     return (
         <>
@@ -19,7 +25,8 @@ export function SearchButton() {
             </Button>
             <dialog
                 ref={dialogElement}
-                className="bg-sand mt-[88px] w-full max-w-[90ch] border border-black/20 p-10 shadow-sm backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+                className="mt-[88px] w-full max-w-[90ch] border border-black/20 bg-sand p-10 shadow-sm backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+                onClose={navigateToResult}
             >
                 <div className="mb-6 flex items-center justify-between">
                     <h1 className="text-xl font-bold">
@@ -40,25 +47,10 @@ export function SearchButton() {
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                 />
-                {!searchResults && (
-                    <p className="mt-6 text-black/60">
-                        Start typing to see results.
-                    </p>
-                )}
-                {searchResults?.hits.length === 0 && (
-                    <p className="mt-6 text-black/60">No result.</p>
-                )}
-                {searchResults && searchResults.hits.length > 0 && (
-                    <List>
-                        {searchResults.hits.map((result) => (
-                            <ListItem
-                                key={result.shortCode}
-                                title={result.name}
-                                subtitle={RESULT_TYPE_DISPLAY_NAME[result.type]}
-                            ></ListItem>
-                        ))}
-                    </List>
-                )}
+                <SearchResultsList
+                    results={searchResults}
+                    cosmogonies={props.cosmogonies}
+                />
             </dialog>
         </>
     );
@@ -72,9 +64,13 @@ export function SearchButton() {
 
         setSearchQuery('');
     }
-}
 
-const RESULT_TYPE_DISPLAY_NAME: Record<SearchDocument['type'], string> = {
-    character: 'Character',
-    chronicle: 'Chronicle',
-};
+    function navigateToResult() {
+        const resultUrl = dialogElement.current?.returnValue;
+        setSearchQuery('');
+
+        if (resultUrl) {
+            router.push(resultUrl);
+        }
+    }
+}
