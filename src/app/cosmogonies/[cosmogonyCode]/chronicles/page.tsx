@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { List } from '@/components/List';
@@ -5,10 +6,29 @@ import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { chroniclesApi } from '@/data/chronicles';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharactersPage(props: {
+type ChroniclesPageProps = {
     params: { cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: ChroniclesPageProps
+): Promise<Metadata> {
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+
+    if (!cosmogony) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(`Chronicles in ${cosmogony.name}`),
+    };
+}
+
+export default async function ChroniclesPage(props: ChroniclesPageProps) {
     const session = await auth();
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode

@@ -3,9 +3,10 @@ import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
 export const metadata: Metadata = {
-    title: 'Cosmogonies',
+    title: pageHtmlTitle('Cosmogonies'),
 };
 
 export default async function Home() {

@@ -11,6 +11,12 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
     title: '✦ Cosmos',
     description: 'A collection of cosmogonies from your own worlds.',
+    icons: [
+        {
+            rel: 'icon',
+            url: '/favicon.svg',
+        },
+    ],
 };
 
 export default function RootLayout({
@@ -19,7 +25,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`bg-sand h-full ${spaceGrotesk.variable}`}>
+        <html lang="en" className={`h-full bg-sand ${spaceGrotesk.variable}`}>
             <body className="flex min-h-full flex-col">
                 <div className="mx-auto w-full max-w-[90ch]">
                     <Header />

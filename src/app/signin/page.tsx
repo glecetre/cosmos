@@ -1,7 +1,13 @@
+import { Metadata } from 'next';
 import { auth, signIn as authSignIn, signOut as authSignOut } from '@/auth';
 import { SignInForm } from '@/components/Auth';
 import { SignOutForm } from '@/components/Auth/SignOutForm';
 import { Page } from '@/components/Page';
+import { pageHtmlTitle } from '@/utils';
+
+export const metadata: Metadata = {
+    title: pageHtmlTitle('Sign In'),
+};
 
 export default async function SignIn() {
     const session = await auth();

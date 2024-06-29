@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
     CREATE_CHRONICLE_FORM_ID,
@@ -6,10 +7,29 @@ import {
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharacterEditPage(props: {
+type NewChroniclePageProps = {
     params: { cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: NewChroniclePageProps
+): Promise<Metadata> {
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+
+    if (!cosmogony) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(`New chronicle in ${cosmogony.name}`),
+    };
+}
+
+export default async function NewChroniclePage(props: NewChroniclePageProps) {
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode
     );
@@ -20,7 +40,7 @@ export default async function CharacterEditPage(props: {
 
     return (
         <Page
-            title={`Creating chronicle`}
+            title={`New chronicle`}
             subtitle={`In ${cosmogony.name}`}
             breadcrumbs={[
                 {

@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -5,10 +6,29 @@ import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharacterPage(props: {
+type CharacterPageProps = {
     params: { characterCode: string; cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: CharacterPageProps
+): Promise<Metadata> {
+    const character = await charactersApi.getByCode(props.params.characterCode);
+
+    if (!character) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(
+            `${character.name} in ${character.cosmogony.name}`
+        ),
+    };
+}
+
+export default async function CharacterPage(props: CharacterPageProps) {
     const session = await auth();
     const character = await charactersApi.getByCode(props.params.characterCode);
 

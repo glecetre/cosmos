@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
     CREATE_CHARACTER_FORM_ID,
@@ -6,10 +7,29 @@ import {
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharacterEditPage(props: {
+type NewCharacterPageProps = {
     params: { cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: NewCharacterPageProps
+): Promise<Metadata> {
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+
+    if (!cosmogony) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(`New character in ${cosmogony.name}`),
+    };
+}
+
+export default async function NewCharacterPage(props: NewCharacterPageProps) {
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode
     );
@@ -20,7 +40,7 @@ export default async function CharacterEditPage(props: {
 
     return (
         <Page
-            title={`Creating character`}
+            title={`New character`}
             subtitle={`In ${cosmogony.name}`}
             breadcrumbs={[
                 {

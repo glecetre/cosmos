@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
     EDIT_CHRONICLE_FORM_ID,
@@ -6,10 +7,31 @@ import {
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { chroniclesApi } from '@/data/chronicles';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function ChronicleEditPage(props: {
+type EditChroniclePageProps = {
     params: { chronicleCode: string; cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: EditChroniclePageProps
+): Promise<Metadata> {
+    const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
+
+    if (!chronicle) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(
+            `Edit ${chronicle.title} in ${chronicle.cosmogony.name}`
+        ),
+    };
+}
+
+export default async function EditChroniclePagePage(
+    props: EditChroniclePageProps
+) {
     const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
     if (
@@ -21,7 +43,7 @@ export default async function ChronicleEditPage(props: {
 
     return (
         <Page
-            title={`Editing chronicle`}
+            title={`Edit chronicle`}
             breadcrumbs={[
                 {
                     text: chronicle.cosmogony.name,

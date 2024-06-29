@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
     EDIT_CHARACTER_FORM_ID,
@@ -6,10 +7,29 @@ import {
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharacterEditPage(props: {
+type CharacterEditPageProps = {
     params: { characterCode: string; cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: CharacterEditPageProps
+): Promise<Metadata> {
+    const character = await charactersApi.getByCode(props.params.characterCode);
+
+    if (!character) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(
+            `Edit ${character.name} in ${character.cosmogony.name}`
+        ),
+    };
+}
+
+export default async function CharacterEditPage(props: CharacterEditPageProps) {
     const character = await charactersApi.getByCode(props.params.characterCode);
 
     if (
@@ -21,7 +41,7 @@ export default async function CharacterEditPage(props: {
 
     return (
         <Page
-            title={`Editing character`}
+            title={`Edit character`}
             breadcrumbs={[
                 {
                     text: character.cosmogony.name,

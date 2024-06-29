@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { List } from '@/components/List';
@@ -5,10 +6,25 @@ import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharactersPage(props: {
+type CharactersPageProps = {
     params: { cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: CharactersPageProps
+): Promise<Metadata> {
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+
+    return {
+        title: pageHtmlTitle(`Characters in ${cosmogony.name}`),
+    };
+}
+
+export default async function CharactersPage(props: CharactersPageProps) {
     const session = await auth();
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode

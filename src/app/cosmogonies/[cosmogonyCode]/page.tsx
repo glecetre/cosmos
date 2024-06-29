@@ -1,13 +1,29 @@
+import { Metadata } from 'next';
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
 import { chroniclesApi } from '@/data/chronicles';
 import { cosmogoniesApi } from '@/data/cosmogonies';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CosmogonyPage(props: {
+type CosmogonyPageProps = {
     params: { cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: CosmogonyPageProps
+): Promise<Metadata> {
+    const cosmogony = await cosmogoniesApi.getByCode(
+        props.params.cosmogonyCode
+    );
+
+    return {
+        title: pageHtmlTitle(cosmogony.name),
+    };
+}
+
+export default async function CosmogonyPage(props: CosmogonyPageProps) {
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode
     );

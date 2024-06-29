@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -5,10 +6,29 @@ import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { chroniclesApi } from '@/data/chronicles';
+import { pageHtmlTitle } from '@/utils';
 
-export default async function CharacterPage(props: {
+type ChroniclePageProps = {
     params: { chronicleCode: string; cosmogonyCode: string };
-}) {
+};
+
+export async function generateMetadata(
+    props: ChroniclePageProps
+): Promise<Metadata> {
+    const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
+
+    if (!chronicle) {
+        return {};
+    }
+
+    return {
+        title: pageHtmlTitle(
+            `${chronicle.title} in ${chronicle.cosmogony.name}`
+        ),
+    };
+}
+
+export default async function ChroniclePage(props: ChroniclePageProps) {
     const session = await auth();
     const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
