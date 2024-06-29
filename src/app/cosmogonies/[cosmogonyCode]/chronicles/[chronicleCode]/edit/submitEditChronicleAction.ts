@@ -2,12 +2,15 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { throwIfUnauthorized } from '@/auth';
 import { chroniclesApi } from '@/data/chronicles';
 
 export async function submitEditChronicle(
     _prevState: SubmitEditChronicleState,
     formData: FormData
 ): Promise<SubmitEditChronicleState> {
+    await throwIfUnauthorized();
+
     const input = Object.fromEntries(
         Array.from(formData).map(([fieldName, fieldValue]) => [
             fieldName,

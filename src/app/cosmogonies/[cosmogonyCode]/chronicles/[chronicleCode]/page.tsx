@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { chroniclesApi } from '@/data/chronicles';
@@ -8,6 +9,7 @@ import { chroniclesApi } from '@/data/chronicles';
 export default async function CharacterPage(props: {
     params: { chronicleCode: string; cosmogonyCode: string };
 }) {
+    const session = await auth();
     const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
     if (
@@ -36,14 +38,16 @@ export default async function CharacterPage(props: {
                 },
             ]}
             actions={[
-                <Button
-                    key="edit"
-                    use="link"
-                    variant="pageAction"
-                    href={`/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles/${chronicle.shortCode}/edit`}
-                >
-                    Edit
-                </Button>,
+                session && (
+                    <Button
+                        key="edit"
+                        use="link"
+                        variant="pageAction"
+                        href={`/cosmogonies/${chronicle.cosmogony.shortCode}/chronicles/${chronicle.shortCode}/edit`}
+                    >
+                        Edit
+                    </Button>
+                ),
             ]}
         >
             <section className="prose text-justify text-xl">

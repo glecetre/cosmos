@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
@@ -8,6 +9,7 @@ import { charactersApi } from '@/data/characters';
 export default async function CharacterPage(props: {
     params: { characterCode: string; cosmogonyCode: string };
 }) {
+    const session = await auth();
     const character = await charactersApi.getByCode(props.params.characterCode);
 
     if (
@@ -36,14 +38,16 @@ export default async function CharacterPage(props: {
                 },
             ]}
             actions={[
-                <Button
-                    key="edit"
-                    use="link"
-                    variant="pageAction"
-                    href={`/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}/edit`}
-                >
-                    Edit
-                </Button>,
+                session && (
+                    <Button
+                        key="edit"
+                        use="link"
+                        variant="pageAction"
+                        href={`/cosmogonies/${character.cosmogony.shortCode}/characters/${character.shortCode}/edit`}
+                    >
+                        Edit
+                    </Button>
+                ),
             ]}
         >
             <section className="prose text-justify text-xl">

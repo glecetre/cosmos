@@ -2,12 +2,15 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { throwIfUnauthorized } from '@/auth';
 import { charactersApi } from '@/data/characters';
 
 export async function submitEditCharacter(
     _prevState: SubmitEditCharacterState,
     formData: FormData
 ): Promise<SubmitEditCharacterState> {
+    await throwIfUnauthorized();
+
     const input = Object.fromEntries(
         Array.from(formData).map(([fieldName, fieldValue]) => [
             fieldName,

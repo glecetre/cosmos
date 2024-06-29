@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { Button } from '@/components/Button';
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
@@ -8,6 +9,7 @@ import { cosmogoniesApi } from '@/data/cosmogonies';
 export default async function CharactersPage(props: {
     params: { cosmogonyCode: string };
 }) {
+    const session = await auth();
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode
     );
@@ -28,14 +30,16 @@ export default async function CharactersPage(props: {
                 },
             ]}
             actions={[
-                <Button
-                    key="goto-create"
-                    use="link"
-                    href={`/cosmogonies/${cosmogony.shortCode}/chronicles/new`}
-                    variant="pageAction"
-                >
-                    Create
-                </Button>,
+                session && (
+                    <Button
+                        key="goto-create"
+                        use="link"
+                        href={`/cosmogonies/${cosmogony.shortCode}/chronicles/new`}
+                        variant="pageAction"
+                    >
+                        Create
+                    </Button>
+                ),
             ]}
         >
             <List>
