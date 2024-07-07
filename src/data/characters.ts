@@ -83,7 +83,7 @@ async function update(
 
     // Force non-null as we know this exists because we've just updated it.
     const updatedCharacter = (await getById(character.id))!;
-    addOrUpdateCharacterToIndex(updatedCharacter);
+    addOrUpdateCharacterToIndex(updatedCharacter, updatedCharacter.cosmogony);
 
     return updatedCharacter;
 }
@@ -101,7 +101,7 @@ async function create(character: InsertCharacter) {
 
     // Force non-null as we know this exists because we've just updated it.
     const createdCharacter = (await getById(insertedId))!;
-    addOrUpdateCharacterToIndex(createdCharacter);
+    addOrUpdateCharacterToIndex(createdCharacter, createdCharacter.cosmogony);
 
     return createdCharacter;
 }

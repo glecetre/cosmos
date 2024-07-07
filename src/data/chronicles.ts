@@ -83,7 +83,7 @@ async function update(
 
     // Force non-null as we know this exists because we've just updated it.
     const updatedChronicle = (await getById(chronicle.id))!;
-    addOrUpdateChronicleToIndex(updatedChronicle);
+    addOrUpdateChronicleToIndex(updatedChronicle, updatedChronicle.cosmogony);
 
     return updatedChronicle;
 }
@@ -101,7 +101,7 @@ async function create(chronicle: InsertChronicle) {
 
     // Force non-null as we know this exists because we've just updated it.
     const createdChronicle = (await getById(insertedId))!;
-    addOrUpdateChronicleToIndex(createdChronicle);
+    addOrUpdateChronicleToIndex(createdChronicle, createdChronicle.cosmogony);
 
     return createdChronicle;
 }

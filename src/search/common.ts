@@ -7,6 +7,8 @@ export type SearchDocument = {
     id: number;
     type: 'character' | 'chronicle';
     cosmogonyId: number;
+    cosmogonyShortCode: string;
+    cosmogonyName: string;
     shortCode: string;
     name: string;
     markdown: string;
