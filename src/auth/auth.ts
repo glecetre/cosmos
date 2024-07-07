@@ -6,12 +6,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 });
 
 /**
- * Throws an error if there is not user session.
+ * Throws an error if the user is not an admin or not connected.
  */
 export async function throwIfUnauthorized() {
-    const session = await auth();
+    const isAuthorized = await isAdmin();
 
-    if (!session) {
+    if (!isAuthorized) {
         throw new Error('Unauthorized');
     }
+}
+
+/**
+ * Check whether the current user is admin.
+ * @returns `true` if the current user is admin.
+ */
+export async function isAdmin() {
+    const session = await auth();
+
+    return (
+        process.env.AUTH_ADMIN_EMAIL &&
+        session?.user?.email === process.env.AUTH_ADMIN_EMAIL
+    );
 }

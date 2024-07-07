@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { auth } from '@/auth';
+import { isAdmin } from '@/auth';
 import { Button } from '@/components/Button';
 import { Markdown } from '@/components/Markdown';
 import { Page } from '@/components/Page';
@@ -28,7 +28,7 @@ export async function generateMetadata(
 }
 
 export default async function ChroniclePage(props: ChroniclePageProps) {
-    const session = await auth();
+    const canEdit = await isAdmin();
     const chronicle = await chroniclesApi.getByCode(props.params.chronicleCode);
 
     if (
@@ -57,7 +57,7 @@ export default async function ChroniclePage(props: ChroniclePageProps) {
                 },
             ]}
             actions={[
-                session && (
+                canEdit && (
                     <Button
                         key="edit"
                         use="link"

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { auth, isAdmin } from '@/auth';
 
 const PROTECTED_ROUTES = [
     /\/cosmogonies\/[a-z-_0-9]{10}\/characters\/new/i,
@@ -7,8 +7,10 @@ const PROTECTED_ROUTES = [
     /\/cosmogonies\/[a-z-_0-9]{10}\/chronicles\/[a-z-_0-9]{10}\/edit/i,
 ];
 
-export const middleware = auth((req) => {
-    if (!req.auth && isRouteProtected(req.nextUrl.pathname)) {
+export const middleware = auth(async (req) => {
+    const isAuthorized = await isAdmin();
+
+    if (isRouteProtected(req.nextUrl.pathname) && !isAuthorized) {
         const newUrl = new URL('/signin', req.nextUrl.origin);
         return Response.redirect(newUrl);
     }

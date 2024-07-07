@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { auth } from '@/auth';
+import { isAdmin } from '@/auth';
 import { Button } from '@/components/Button';
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
@@ -29,7 +29,7 @@ export async function generateMetadata(
 }
 
 export default async function ChroniclesPage(props: ChroniclesPageProps) {
-    const session = await auth();
+    const canCreateEntry = await isAdmin();
     const cosmogony = await cosmogoniesApi.getByCode(
         props.params.cosmogonyCode
     );
@@ -50,7 +50,7 @@ export default async function ChroniclesPage(props: ChroniclesPageProps) {
                 },
             ]}
             actions={[
-                session && (
+                canCreateEntry && (
                     <Button
                         key="goto-create"
                         use="link"
