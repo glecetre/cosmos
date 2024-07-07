@@ -32,9 +32,7 @@ export function Page(props: PageProps) {
                         {props.subtitle}
                     </h3>
                 )}
-                <main className="mt-20 text-xl prose-h1:mt-12 prose-h1:text-2xl prose-h2:text-xl">
-                    {props.children}
-                </main>
+                <main className="mt-20 text-xl">{props.children}</main>
             </div>
         </>
     );

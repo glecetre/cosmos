@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { auth } from '@/auth';
 import { Button } from '@/components/Button';
+import { Markdown } from '@/components/Markdown';
 import { Page } from '@/components/Page';
 import { charactersApi } from '@/data/characters';
 import { pageHtmlTitle } from '@/utils';
@@ -70,11 +69,7 @@ export default async function CharacterPage(props: CharacterPageProps) {
                 ),
             ]}
         >
-            <section className="prose text-justify text-xl">
-                <Markdown remarkPlugins={[remarkGfm]}>
-                    {character.markdown}
-                </Markdown>
-            </section>
+            <Markdown>{character.markdown}</Markdown>
         </Page>
     );
 }

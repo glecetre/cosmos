@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { auth } from '@/auth';
 import { Button } from '@/components/Button';
+import { Markdown } from '@/components/Markdown';
 import { Page } from '@/components/Page';
 import { chroniclesApi } from '@/data/chronicles';
 import { pageHtmlTitle } from '@/utils';
@@ -70,11 +69,7 @@ export default async function ChroniclePage(props: ChroniclePageProps) {
                 ),
             ]}
         >
-            <section className="prose text-justify text-xl">
-                <Markdown remarkPlugins={[remarkGfm]}>
-                    {chronicle.markdown}
-                </Markdown>
-            </section>
+            <Markdown>{chronicle.markdown}</Markdown>
         </Page>
     );
 }
