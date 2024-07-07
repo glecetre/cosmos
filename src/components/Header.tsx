@@ -1,9 +1,6 @@
 import { SearchButton } from '@/components/Search';
-import { cosmogoniesApi } from '@/data/cosmogonies';
 
 export async function Header() {
-    const cosmogonies = await cosmogoniesApi.getAll();
-
     return (
         <header className="flex items-baseline justify-between gap-8 px-20 py-6">
             <a href="/">
@@ -12,7 +9,7 @@ export async function Header() {
                 </h1>
             </a>
             <div>
-                <SearchButton cosmogonies={cosmogonies} />
+                <SearchButton />
             </div>
         </header>
     );
