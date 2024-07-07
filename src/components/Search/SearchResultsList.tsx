@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
-import { Button } from '@/components/Button';
 import { List } from '@/components/List';
 import { ListItem } from '@/components/ListItem';
-import { Cosmogony } from '@/data/cosmogonies';
 import {
     SEARCH_HIGHLIGHT_TAG_END,
     SEARCH_HIGHLIGHT_TAG_START,
@@ -16,9 +14,9 @@ const RESULT_TYPE_DISPLAY_NAME: Record<SearchDocument['type'], string> = {
     chronicle: 'Chronicle',
 };
 
-type SearchResultsListProps = {
+export type SearchResultsListProps = {
     results?: SearchResults;
-    cosmogonies: Cosmogony[];
+    resultAction: (result: SearchResultHit) => ReactNode;
 };
 
 export function SearchResultsList(props: SearchResultsListProps) {
@@ -33,53 +31,22 @@ export function SearchResultsList(props: SearchResultsListProps) {
     }
 
     return (
-        <form method="dialog">
-            <List>
-                {props.results.hits.map((result) => (
-                    <ListItem
-                        key={result.shortCode}
-                        title={result.name}
-                        subtitle={getResultSubtitle(result)}
-                        action={
-                            <Button
-                                variant="button"
-                                value={getResultUrl(result)}
-                            >
-                                View&nbsp;→
-                            </Button>
-                        }
-                    >
-                        <p>{getResultPreview(result)}</p>
-                    </ListItem>
-                ))}
-            </List>
-        </form>
+        <List>
+            {props.results.hits.map((result) => (
+                <ListItem
+                    key={result.shortCode}
+                    title={result.name}
+                    subtitle={getResultSubtitle(result)}
+                    action={props.resultAction(result)}
+                >
+                    <p>{getResultPreview(result)}</p>
+                </ListItem>
+            ))}
+        </List>
     );
 
     function getResultSubtitle(result: SearchResultHit) {
-        let subtitle = RESULT_TYPE_DISPLAY_NAME[result.type];
-
-        const cosmogony = getResultCosmogony(result);
-        if (cosmogony) {
-            subtitle += ` in ${cosmogony.name}`;
-        }
-
-        return subtitle;
-    }
-
-    function getResultUrl(result: SearchResultHit) {
-        const cosmogonyShortCode = getResultCosmogony(result)?.shortCode;
-
-        if (!cosmogonyShortCode) {
-            return;
-        }
-
-        switch (result.type) {
-            case 'character':
-                return `/cosmogonies/${cosmogonyShortCode}/characters/${result.shortCode}`;
-            case 'chronicle':
-                return `/cosmogonies/${cosmogonyShortCode}/chronicles/${result.shortCode}`;
-        }
+        return `${RESULT_TYPE_DISPLAY_NAME[result.type]} in ${result.cosmogonyName}`;
     }
 
     function getResultPreview(result: SearchResultHit) {
@@ -123,11 +90,5 @@ export function SearchResultsList(props: SearchResultsListProps) {
         );
 
         return nodes;
-    }
-
-    function getResultCosmogony(result: SearchResultHit) {
-        return props.cosmogonies.find(
-            (cosmogony) => cosmogony.id === result.cosmogonyId
-        );
     }
 }
