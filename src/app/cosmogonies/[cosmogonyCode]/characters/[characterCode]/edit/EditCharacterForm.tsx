@@ -2,9 +2,9 @@
 
 import { useFormState } from 'react-dom';
 import { submitEditCharacter } from '@/app/cosmogonies/[cosmogonyCode]/characters/[characterCode]/edit/submitEditCharacterAction';
+import { ContentWriter } from '@/components/ContentWriter';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
-import { Textarea } from '@/components/Textarea';
 import { SelectCharacter } from '@/data/schema';
 
 export const EDIT_CHARACTER_FORM_ID = 'edit-character-form';
@@ -28,14 +28,13 @@ export function EditCharacterForm(props: EditCharacterFormProps) {
                 errors={submissionState.errors?.fieldErrors?.name}
                 autoComplete="off"
             />
-            <Textarea
+            <ContentWriter
                 name="markdown"
                 defaultValue={
                     submissionState.fields?.markdown || props.character.markdown
                 }
                 label="Content"
                 errors={submissionState.errors?.fieldErrors?.markdown}
-                rows={19}
             />
         </Form>
     );

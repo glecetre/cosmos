@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    ChangeEvent,
     ComponentPropsWithRef,
     Ref,
     forwardRef,
@@ -29,6 +30,7 @@ function TextareaWithRef(props: TextareaProps, ref: Ref<HTMLTextAreaElement>) {
 
     useEffect(() => {
         resizeTextarea();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -42,13 +44,18 @@ function TextareaWithRef(props: TextareaProps, ref: Ref<HTMLTextAreaElement>) {
         </InputLabel>
     );
 
-    function resizeTextarea() {
+    function resizeTextarea(event?: ChangeEvent<HTMLTextAreaElement>) {
         if (!textareaElement.current) {
             return;
         }
 
         textareaElement.current.style.height =
             textareaElement.current.scrollHeight + 'px';
+
+        // Also trigger the possible `onChange` prop we may be given
+        if (event) {
+            props.onChange?.(event);
+        }
     }
 }
 

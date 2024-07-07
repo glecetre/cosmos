@@ -2,9 +2,9 @@
 
 import { useFormState } from 'react-dom';
 import { submitEditChronicle } from '@/app/cosmogonies/[cosmogonyCode]/chronicles/[chronicleCode]/edit/submitEditChronicleAction';
+import { ContentWriter } from '@/components/ContentWriter';
 import { Form } from '@/components/Form';
 import { Input } from '@/components/Input';
-import { Textarea } from '@/components/Textarea';
 import { SelectChronicle } from '@/data/schema';
 
 export const EDIT_CHRONICLE_FORM_ID = 'edit-chronicle-form';
@@ -28,14 +28,13 @@ export function EditChronicleForm(props: EditChronicleFormProps) {
                 errors={submissionState.errors?.fieldErrors?.title}
                 autoComplete="off"
             />
-            <Textarea
+            <ContentWriter
                 name="markdown"
                 defaultValue={
                     submissionState.fields?.markdown || props.chronicle.markdown
                 }
                 label="Content"
                 errors={submissionState.errors?.fieldErrors?.markdown}
-                rows={19}
             />
         </Form>
     );
